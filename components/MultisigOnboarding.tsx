@@ -685,7 +685,6 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                     {getTokenImage("3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin", 24)}
                     <span className="text-orange-400 font-bold">NVAI Burn</span>
                   </div>
-                  <span className="text-gray-400 text-xs">(Admin pays SOL fees)</span>
                 </>
               ) : (
                 <>

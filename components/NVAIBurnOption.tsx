@@ -128,7 +128,7 @@ export default function NVAIBurnOption({ onSelect, selected }: NVAIBurnOptionPro
             <Sparkles className="w-4 h-4 text-orange-400" />
           </h3>
           <p className="text-xs text-gray-400 mb-3">
-            Exclusive for NVAI holders - Admin pays creation fees when you burn NVAI
+            Exclusive for NVAI holders - Zero SOL required for multisig creation
           </p>
 
           <div className="space-y-2 bg-black/30 p-3 rounded-lg">
@@ -173,7 +173,7 @@ export default function NVAIBurnOption({ onSelect, selected }: NVAIBurnOptionPro
 
           {hasEnoughNVAI && (
             <div className="mt-3 p-2 bg-green-500/10 border border-green-500/30 rounded text-xs text-green-200">
-              ✓ You have enough NVAI! Admin will pay the SOL fees.
+              ✓ You have enough NVAI to create your multisig!
             </div>
           )}
         </div>
