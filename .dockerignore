@@ -1,0 +1,31 @@
+node_modules
+npm-debug.log
+.next
+.git
+.env
+.env.local
+.DS_Store
+*.log
+
+# SDK has its own node_modules - exclude to avoid conflicts
+sdk/multisig/node_modules
+sdk/multisig/.next
+sdk/rs/target
+
+# Build artifacts
+.vercel
+out
+dist
+build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
