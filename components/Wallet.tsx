@@ -7,6 +7,10 @@ import {
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
+import { CoinbaseWalletAdapter } from "@solana/wallet-adapter-coinbase";
+import { LedgerWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { TrustWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { Coin98WalletAdapter } from "@solana/wallet-adapter-coin98";
 import { HARDCODED_RPC_URL } from "@/lib/utils";
 
 require("@solana/wallet-adapter-react-ui/styles.css");
@@ -22,6 +26,10 @@ export const Wallet: FC<Props> = ({ children }) => {
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
+      new CoinbaseWalletAdapter(),
+      new LedgerWalletAdapter(),
+      new TrustWalletAdapter(),
+      new Coin98WalletAdapter(),
     ],
     []
   );

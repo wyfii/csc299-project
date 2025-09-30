@@ -423,7 +423,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       // Wait for everything to propagate before completing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      onComplete();
+        onComplete();
     } catch (error: any) {
       console.error("Error creating multisig:", error);
       toast.error(`Failed to create Multisig: ${error.message}`, { id: "create-multisig" });
@@ -832,11 +832,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                       >
                         {isCreating ? (
                           <>
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                              className="w-4 h-4 border-2 border-black border-t-transparent rounded-full mr-2"
-                            />
+                            <div className="w-4 h-4 bg-black rounded-full mr-2 animate-pulse" />
                             Creating...
                           </>
                         ) : (
