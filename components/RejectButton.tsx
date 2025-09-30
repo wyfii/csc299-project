@@ -2,11 +2,13 @@
 import {
   Connection,
   PublicKey,
-  Transaction,
+  TransactionMessage,
+  VersionedTransaction,
   clusterApiUrl,
 } from "@solana/web3.js";
+import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from "@/lib/utils";
 import { Button } from "./ui/button";
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { toast } from "sonner";
@@ -31,9 +33,10 @@ const RejectButton = ({
   const walletModal = useWalletModal();
   const router = useRouter();
 
-  const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"), {
+  const connection = new Connection(HARDCODED_RPC_URL, {
     commitment: "confirmed",
-  });
+    httpHeaders: HARDCODED_RPC_HEADERS,
+  } as any);
 
   const validKinds = ["None", "Active", "Draft"];
   const isKindValid = validKinds.includes(proposalStatus);
@@ -43,14 +46,17 @@ const RejectButton = ({
       walletModal.setVisible(true);
       return;
     }
-    let bigIntTransactionIndex = BigInt(transactionIndex);
+    
+    const bigIntTransactionIndex = BigInt(transactionIndex);
 
     if (!isKindValid) {
       toast.error("You can't reject this proposal.");
       return;
     }
 
-    const transaction = new Transaction();
+    const instructions = [];
+    
+    // Add create proposal instruction if needed
     if (proposalStatus === "None") {
       const createProposalInstruction = multisig.instructions.proposalCreate({
         multisigPda: new PublicKey(multisigPda),
@@ -60,9 +66,11 @@ const RejectButton = ({
         rentPayer: wallet.publicKey,
         programId: programId ? new PublicKey(programId) : multisig.PROGRAM_ID,
       });
-      transaction.add(createProposalInstruction);
+      instructions.push(createProposalInstruction);
     }
-    if (proposalStatus == "Draft") {
+    
+    // Add activate proposal instruction if needed
+    if (proposalStatus === "Draft") {
       const activateProposalInstruction =
         multisig.instructions.proposalActivate({
           multisigPda: new PublicKey(multisigPda),
@@ -70,26 +78,56 @@ const RejectButton = ({
           transactionIndex: bigIntTransactionIndex,
           programId: programId ? new PublicKey(programId) : multisig.PROGRAM_ID,
         });
-      transaction.add(activateProposalInstruction);
+      instructions.push(activateProposalInstruction);
     }
+    
+    // Always add reject instruction
     const rejectProposalInstruction = multisig.instructions.proposalReject({
       multisigPda: new PublicKey(multisigPda),
       member: wallet.publicKey,
       transactionIndex: bigIntTransactionIndex,
       programId: programId ? new PublicKey(programId) : multisig.PROGRAM_ID,
     });
+    instructions.push(rejectProposalInstruction);
 
-    transaction.add(rejectProposalInstruction);
+    // Get latest blockhash
+    const blockhash = (await connection.getLatestBlockhash()).blockhash;
+    
+    // Create versioned transaction
+    const message = new TransactionMessage({
+      instructions: instructions,
+      payerKey: wallet.publicKey,
+      recentBlockhash: blockhash,
+    }).compileToV0Message();
+    
+    const transaction = new VersionedTransaction(message);
 
     const signature = await wallet.sendTransaction(transaction, connection, {
       skipPreflight: true,
     });
+    
     console.log("Transaction signature", signature);
     toast.loading("Confirming...", {
       id: "transaction",
     });
     await connection.getSignatureStatuses([signature]);
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    // Show success with clickable Solscan link
+    toast.success(
+      <div className="flex flex-col gap-1">
+        <span>Transaction rejected! ✅</span>
+        <a 
+          href={`https://solscan.io/tx/${signature}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-orange-400 hover:text-orange-300 underline text-xs"
+        >
+          View on Solscan →
+        </a>
+      </div>,
+      { id: "transaction", duration: 10000 }
+    );
     router.refresh();
   };
   return (

@@ -83,6 +83,9 @@ export function TokenList({
                     decimals={
                       token.account.data.parsed.info.tokenAmount.decimals
                     }
+                    tokenBalance={
+                      token.account.data.parsed.info.tokenAmount.uiAmount || 0
+                    }
                     rpcUrl={rpcUrl}
                     multisigPda={multisigPda}
                     vaultIndex={vaultIndex}

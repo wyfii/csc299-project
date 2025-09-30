@@ -10,24 +10,71 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import * as multisig from "@sqds/multisig";
+import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL, OFFICIAL_PROGRAM_ID } from "@/lib/utils";
+import * as multisig from "nova-multisig-sdk";
 import { cookies, headers } from "next/headers";
+import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
+
+// Add caching to reduce RPC calls
+export const revalidate = 30; // Cache for 30 seconds
+export const dynamic = 'force-dynamic';
+
 const ConfigurationPage = async () => {
   const rpcUrl = headers().get("x-rpc-url");
+  const connection = new Connection(HARDCODED_RPC_URL, {
+    commitment: "confirmed",
+    httpHeaders: HARDCODED_RPC_HEADERS,
+  } as any);
+  
+  // Get wallet address and query Firestore for multisig
+  const walletAddress = headers().get("x-wallet");
+  let multisigCookie: string | null = null;
+  if (walletAddress) {
+    multisigCookie = await getMultisigFromFirestore(walletAddress);
+  }
+  
+  if (!multisigCookie) {
+    return (
+      <div className="">
+        <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+      </div>
+    );
+  }
+  let multisigPda: PublicKey;
+  try {
+    multisigPda = new PublicKey(multisigCookie);
+  } catch {
+    return (
+      <div className="">
+        <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+      </div>
+    );
+  }
+  const vaultIndex = Number(headers().get("x-vault-index")) || 0;
+  let programId: PublicKey;
+  try {
+    programId = new PublicKey(OFFICIAL_PROGRAM_ID);
+  } catch {
+    programId = multisig.PROGRAM_ID;
+  }
 
-  const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"));
-  const multisigCookie = headers().get("x-multisig");
-  const multisigPda = new PublicKey(multisigCookie!);
-  const vaultIndex = Number(headers().get("x-vault-index"));
-  const programIdCookie = cookies().get("x-program-id")?.value;
-  const programId = programIdCookie
-    ? new PublicKey(programIdCookie!)
-    : multisig.PROGRAM_ID;
-
-  const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
-    connection,
-    multisigPda
-  );
+  let multisigInfo: multisig.generated.Multisig;
+  try {
+    multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
+      connection,
+      multisigPda
+    );
+  } catch (e) {
+    return (
+      <div className="">
+        <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+        <p className="text-sm text-slate-600">
+          Multisig not found at {multisigCookie}. Check the multisig address,
+          selected program ID, and RPC/cluster, then try again.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="">
       <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
@@ -54,17 +101,13 @@ const ConfigurationPage = async () => {
                   </div>
                   <div className="ml-auto">
                     <RemoveMemberButton
-                      rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+                      rpcUrl={HARDCODED_RPC_URL}
                       memberKey={member.key.toBase58()}
                       multisigPda={multisigCookie!}
                       transactionIndex={
                         Number(multisigInfo.transactionIndex) + 1
                       }
-                      programId={
-                        programId.toBase58()
-                          ? programId.toBase58()
-                          : multisig.PROGRAM_ID.toBase58()
-                      }
+                      programId={programId.toBase58()}
                     />
                   </div>
                 </div>
@@ -83,13 +126,9 @@ const ConfigurationPage = async () => {
           <CardContent>
             <AddMemberInput
               multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+              rpcUrl={HARDCODED_RPC_URL}
               transactionIndex={Number(multisigInfo.transactionIndex) + 1}
-              programId={
-                programIdCookie
-                  ? programIdCookie
-                  : multisig.PROGRAM_ID.toBase58()
-              }
+              programId={programId.toBase58()}
             />
           </CardContent>
         </Card>
@@ -103,13 +142,9 @@ const ConfigurationPage = async () => {
           <CardContent>
             <ChangeThresholdInput
               multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+              rpcUrl={HARDCODED_RPC_URL}
               transactionIndex={Number(multisigInfo.transactionIndex) + 1}
-              programId={
-                programIdCookie
-                  ? programIdCookie
-                  : multisig.PROGRAM_ID.toBase58()
-              }
+              programId={programId.toBase58()}
             />
           </CardContent>
         </Card>
@@ -125,14 +160,10 @@ const ConfigurationPage = async () => {
           <CardContent>
             <ChangeUpgradeAuthorityInput
               multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+              rpcUrl={HARDCODED_RPC_URL}
               transactionIndex={Number(multisigInfo.transactionIndex) + 1}
               vaultIndex={vaultIndex}
-              globalProgramId={
-                programIdCookie
-                  ? programIdCookie
-                  : multisig.PROGRAM_ID.toBase58()
-              }
+              globalProgramId={programId.toBase58()}
             />
           </CardContent>
         </Card>

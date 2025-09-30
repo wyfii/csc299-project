@@ -1,5 +1,5 @@
 import * as web3 from "@solana/web3.js";
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import { PublicKey } from "@solana/web3.js";
 
 export interface Member {

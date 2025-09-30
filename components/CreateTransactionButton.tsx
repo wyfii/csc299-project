@@ -10,15 +10,10 @@ import {
 import * as bs58 from "bs58";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
-import {
-  Connection,
-  Message,
-  PublicKey,
-  TransactionInstruction,
-  clusterApiUrl,
-} from "@solana/web3.js";
+import { Connection, Message, PublicKey, TransactionInstruction, clusterApiUrl } from "@solana/web3.js";
+import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { simulateEncodedTransaction } from "@/lib/transaction/simulateEncodedTransaction";
@@ -42,9 +37,10 @@ const CreateTransaction = ({
   const [tx, setTx] = useState("");
   const [open, setOpen] = useState(false);
 
-  const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"), {
+  const connection = new Connection(HARDCODED_RPC_URL, {
     commitment: "confirmed",
-  });
+    httpHeaders: HARDCODED_RPC_HEADERS,
+  } as any);
 
   const getSampleMessage = async () => {
     let memo = "Hello from Solana land!";

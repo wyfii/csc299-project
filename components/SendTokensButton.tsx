@@ -14,15 +14,10 @@ import {
   createTransferCheckedInstruction,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
-import {
-  Connection,
-  PublicKey,
-  TransactionMessage,
-  VersionedTransaction,
-  clusterApiUrl,
-} from "@solana/web3.js";
+import { Connection, PublicKey, TransactionMessage, VersionedTransaction, clusterApiUrl } from "@solana/web3.js";
+import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from "@/lib/utils";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
@@ -33,6 +28,7 @@ type SendTokensProps = {
   tokenAccount: string;
   mint: string;
   decimals: number;
+  tokenBalance: number;
   rpcUrl: string;
   multisigPda: string;
   vaultIndex: number;
@@ -43,6 +39,7 @@ const SendTokens = ({
   tokenAccount,
   mint,
   decimals,
+  tokenBalance,
   rpcUrl,
   multisigPda,
   vaultIndex,
@@ -58,6 +55,27 @@ const SendTokens = ({
     if (!wallet.publicKey) {
       return;
     }
+
+    // Validate amount before creating transaction
+    console.log('💰 Token Transfer Validation:', {
+      tokenAccount,
+      availableBalance: tokenBalance,
+      requestedAmount: amount,
+      hasEnough: tokenBalance >= amount,
+    });
+
+    if (amount > tokenBalance) {
+      toast.error(
+        <div className="flex flex-col gap-1">
+          <span>❌ Insufficient tokens in vault!</span>
+          <span className="text-xs">Available: {tokenBalance} tokens</span>
+          <span className="text-xs">Requested: {amount} tokens</span>
+        </div>,
+        { id: 'transfer', duration: 10000 }
+      );
+      return;
+    }
+
     const recipientATA = getAssociatedTokenAddressSync(
       new PublicKey(mint),
       new PublicKey(recipient),
@@ -89,9 +107,10 @@ const SendTokens = ({
       decimals
     );
 
-    const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"), {
+    const connection = new Connection(HARDCODED_RPC_URL, {
       commitment: "confirmed",
-    });
+      httpHeaders: HARDCODED_RPC_HEADERS,
+    } as any);
 
     const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
       connection,
@@ -151,6 +170,23 @@ const SendTokens = ({
     });
     await connection.getSignatureStatuses([signature]);
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    // Show success with clickable Solscan link
+    toast.success(
+      <div className="flex flex-col gap-1">
+        <span>Token transfer proposed & auto-approved! 🎉</span>
+        <span className="text-xs text-gray-400">You&apos;ve already approved this transaction</span>
+        <a 
+          href={`https://solscan.io/tx/${signature}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-orange-400 hover:text-orange-300 underline text-xs"
+        >
+          View on Solscan →
+        </a>
+      </div>,
+      { id: "transaction", duration: 10000 }
+    );
     router.refresh();
   };
 
@@ -182,11 +218,27 @@ const SendTokens = ({
         {isPublickey(recipient) ? null : (
           <p className="text-xs">Invalid recipient address</p>
         )}
-        <Input
-          placeholder="Amount"
-          type="number"
-          onChange={(e) => setAmount(parseInt(e.target.value))}
-        />
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <label className="text-sm text-gray-400">Amount</label>
+            <span className="text-xs text-gray-500">
+              Available: {tokenBalance} tokens
+            </span>
+          </div>
+          <Input
+            placeholder="Amount (token amount, e.g., 10 or 0.5)"
+            type="number"
+            step="0.000000001"
+            min="0"
+            max={tokenBalance}
+            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+          />
+          {amount > tokenBalance && (
+            <p className="text-xs text-red-400">
+              ⚠️ Amount exceeds token balance! Max: {tokenBalance}
+            </p>
+          )}
+        </div>
         <Button
           onClick={() =>
             toast.promise(transfer, {
@@ -196,7 +248,7 @@ const SendTokens = ({
               error: (e) => `Failed to propose: ${e}`,
             })
           }
-          disabled={!isPublickey(recipient)}
+          disabled={!isPublickey(recipient) || amount <= 0 || amount > tokenBalance}
         >
           Transfer
         </Button>

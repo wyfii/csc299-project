@@ -1,6 +1,7 @@
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import { cookies, headers } from "next/headers";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL, OFFICIAL_PROGRAM_ID } from "@/lib/utils";
 import {
   Table,
   TableCaption,
@@ -18,6 +19,11 @@ import {
 import { Suspense } from "react";
 import CreateTransaction from "@/components/CreateTransactionButton";
 import TransactionTable from "@/components/TransactionTable";
+import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
+
+// Add caching to reduce RPC calls
+export const revalidate = 30; // Cache for 30 seconds
+export const dynamic = 'force-dynamic';
 
 const TRANSACTIONS_PER_PAGE = 10;
 
@@ -38,24 +44,66 @@ export default async function TransactionsPage({
 }) {
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
   const rpcUrl = headers().get("x-rpc-url");
-  const connection = new Connection(
-    rpcUrl || clusterApiUrl("mainnet-beta"),
-    "confirmed"
-  );
-  const multisigCookie = cookies().get("x-multisig")?.value;
-  const multisigPda = new PublicKey(multisigCookie!);
-  const vaultIndex = Number(headers().get("x-vault-index"));
-  const programIdCookie = cookies().get("x-program-id")
-    ? cookies().get("x-program-id")?.value
-    : multisig.PROGRAM_ID.toString();
-  const programId = programIdCookie
-    ? new PublicKey(programIdCookie!)
-    : multisig.PROGRAM_ID;
+  const connection = new Connection(HARDCODED_RPC_URL, {
+    commitment: "confirmed",
+    httpHeaders: HARDCODED_RPC_HEADERS,
+  } as any);
+  
+  // Get wallet address and query Firestore for multisig
+  const walletAddress = headers().get("x-wallet");
+  let multisigCookie: string | null = null;
+  if (walletAddress) {
+    multisigCookie = await getMultisigFromFirestore(walletAddress);
+  }
+  
+  if (!multisigCookie) {
+    return (
+      <div>
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Transactions</h1>
+        </div>
+      </div>
+    );
+  }
+  let multisigPda: PublicKey;
+  try {
+    multisigPda = new PublicKey(multisigCookie);
+  } catch {
+    return (
+      <div>
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Transactions</h1>
+        </div>
+      </div>
+    );
+  }
+  const vaultIndex = Number(headers().get("x-vault-index")) || 0;
+  let programId: PublicKey;
+  try {
+    programId = new PublicKey(OFFICIAL_PROGRAM_ID);
+  } catch {
+    programId = multisig.PROGRAM_ID;
+  }
 
-  const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
-    connection,
-    multisigPda
-  );
+  let multisigInfo: multisig.generated.Multisig;
+  try {
+    multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
+      connection,
+      multisigPda
+    );
+  } catch (e) {
+    return (
+      <div>
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Transactions</h1>
+        </div>
+        <p className="text-sm text-slate-600">
+          Multisig not found at {multisigCookie}. Check the multisig address,
+          selected program ID, and RPC/cluster, then try again.
+        </p>
+      </div>
+    );
+  }
 
   const totalTransactions = Number(multisigInfo.transactionIndex);
   const totalPages = Math.ceil(totalTransactions / TRANSACTIONS_PER_PAGE);
@@ -69,12 +117,17 @@ export default async function TransactionsPage({
   const startIndex = totalTransactions - (page - 1) * TRANSACTIONS_PER_PAGE;
   const endIndex = Math.max(startIndex - TRANSACTIONS_PER_PAGE + 1, 1);
 
-  const latestTransactions = await Promise.all(
-    Array.from({ length: startIndex - endIndex + 1 }, (_, i) => {
-      const index = BigInt(startIndex - i);
-      return fetchTransactionData(connection, multisigPda, index, programId);
-    })
-  );
+  let latestTransactions: Awaited<ReturnType<typeof fetchTransactionData>>[] = [];
+  try {
+    latestTransactions = await Promise.all(
+      Array.from({ length: startIndex - endIndex + 1 }, (_, i) => {
+        const index = BigInt(startIndex - i);
+        return fetchTransactionData(connection, multisigPda, index, programId);
+      })
+    );
+  } catch (e) {
+    latestTransactions = [] as any;
+  }
 
   const transactions = latestTransactions.map((transaction) => {
     return {
@@ -88,10 +141,10 @@ export default async function TransactionsPage({
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Transactions</h1>
         <CreateTransaction
-          rpcUrl={rpcUrl}
-          multisigPda={multisigCookie!}
+          rpcUrl={HARDCODED_RPC_URL}
+          multisigPda={multisigCookie}
           vaultIndex={vaultIndex}
-          programId={programIdCookie}
+          programId={OFFICIAL_PROGRAM_ID}
         />
       </div>
 
@@ -112,10 +165,10 @@ export default async function TransactionsPage({
           </TableHeader>
           <Suspense fallback={<div>Loading...</div>}>
             <TransactionTable
-              multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl!}
+              multisigPda={multisigCookie}
+              rpcUrl={HARDCODED_RPC_URL}
               transactions={transactions}
-              programId={programIdCookie!}
+              programId={OFFICIAL_PROGRAM_ID}
             />
           </Suspense>
         </Table>

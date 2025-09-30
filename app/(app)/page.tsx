@@ -1,25 +1,73 @@
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { cookies, headers } from "next/headers";
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import { TokenList } from "@/components/TokenList";
 import { VaultDisplayer } from "@/components/VaultDisplayer";
+import EmptyMultisigState from "@/components/EmptyMultisigState";
+import MultisigAddressDisplay from "@/components/MultisigAddressDisplay";
+import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
+import { HARDCODED_RPC_URL, HARDCODED_RPC_HEADERS } from "@/lib/utils";
+
+// Add caching to reduce RPC calls
+export const revalidate = 30; // Cache for 30 seconds
+export const dynamic = 'force-dynamic'; // Still dynamic for user-specific data
 
 export default async function Home() {
-  const rpcUrl = headers().get("x-rpc-url");
+  const connection = new Connection(HARDCODED_RPC_URL, {
+    commitment: "confirmed",
+    httpHeaders: HARDCODED_RPC_HEADERS,
+  } as any);
 
-  const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"));
-  const multisigCookie = headers().get("x-multisig");
-  const multisigPda = new PublicKey(multisigCookie!);
-  const vaultIndex = Number(headers().get("x-vault-index"));
+  // Get wallet address from header (set by middleware from cookie)
+  const walletAddress = headers().get("x-wallet");
+  
+  // Fetch multisig from Firestore using wallet address
+  let multisigCookie: string | null = null;
+  if (walletAddress) {
+    multisigCookie = await getMultisigFromFirestore(walletAddress);
+  }
+  
+  if (!multisigCookie) {
+    return (
+      <main className="">
+        <div>
+          <h1 className="text-3xl font-bold mb-4 font-sans">Overview</h1>
+          <EmptyMultisigState />
+        </div>
+      </main>
+    );
+  }
+
+  let multisigPda: PublicKey;
+  try {
+    multisigPda = new PublicKey(multisigCookie);
+  } catch {
+    return (
+      <main className="">
+        <div>
+          <h1 className="text-3xl font-bold mb-4 font-sans">Overview</h1>
+          <EmptyMultisigState />
+        </div>
+      </main>
+    );
+  }
+
+  const vaultIndex = Number(headers().get("x-vault-index")) || 0;
+
   const programIdCookie = cookies().get("x-program-id")?.value;
-  const programId = programIdCookie
-    ? new PublicKey(programIdCookie!)
-    : multisig.PROGRAM_ID;
+  let programId: PublicKey = multisig.PROGRAM_ID;
+  if (programIdCookie) {
+    try {
+      programId = new PublicKey(programIdCookie);
+    } catch {
+      programId = multisig.PROGRAM_ID;
+    }
+  }
 
   const multisigVault = multisig.getVaultPda({
     multisigPda,
-    index: vaultIndex || 0,
-    programId: programId ? programId : multisig.PROGRAM_ID,
+    index: vaultIndex,
+    programId,
   })[0];
 
   const solBalance = await connection.getBalance(multisigVault);
@@ -34,19 +82,21 @@ export default async function Home() {
   return (
     <main className="">
       <div>
-        <h1 className="text-3xl font-bold mb-4">Overview</h1>
+        <h1 className="text-3xl font-bold mb-4 font-sans">Overview</h1>
+        
+        <MultisigAddressDisplay multisigAddress={multisigCookie} />
 
         <VaultDisplayer
-          multisigPdaString={multisigCookie!}
-          vaultIndex={vaultIndex || 0}
-          programId={programIdCookie!}
+          multisigPdaString={multisigCookie}
+          vaultIndex={vaultIndex}
+          programId={programIdCookie}
         />
         <TokenList
           solBalance={solBalance}
           tokens={tokensInWallet}
-          rpcUrl={rpcUrl!}
-          multisigPda={multisigCookie!}
-          vaultIndex={vaultIndex || 0}
+          rpcUrl={HARDCODED_RPC_URL}
+          multisigPda={multisigCookie}
+          vaultIndex={vaultIndex}
           programId={programIdCookie!}
         />
       </div>

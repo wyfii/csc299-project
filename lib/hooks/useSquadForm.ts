@@ -44,11 +44,20 @@ export function useSquadForm<T>(
 
   const handleChange = useCallback(
     async (field: string, value: any) => {
-      setFormState((prev) => ({
-        ...prev,
-        isLoading: true,
-        values: { ...prev.values, [field]: value },
-      }));
+      setFormState((prev) => {
+        const newValues = { ...prev.values, [field]: value };
+        
+        // Auto-update threshold when members change
+        if (field === "members" && value.memberData) {
+          newValues.threshold = value.memberData.length;
+        }
+        
+        return {
+          ...prev,
+          isLoading: true,
+          values: newValues,
+        };
+      });
 
       const error = await validateField(field, value);
 
@@ -69,17 +78,20 @@ export function useSquadForm<T>(
 
   const handleAddMember = (e: any) => {
     e.preventDefault();
+    const newMemberData = [
+      ...formState.values.members.memberData,
+      {
+        key: null,
+        permissions: {
+          mask: 0,
+        },
+      },
+    ];
+    
+    // Update members (threshold will auto-update in handleChange)
     handleChange("members", {
       count: formState.values.members.count + 1,
-      memberData: [
-        ...formState.values.members.memberData,
-        {
-          key: null,
-          permissions: {
-            mask: 0,
-          },
-        },
-      ],
+      memberData: newMemberData,
     });
   };
 

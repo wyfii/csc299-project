@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { isPublickey } from "@/lib/isPublickey";
 import { ValidationRules, useSquadForm } from "@/lib/hooks/useSquadForm";
+import { useUserOnboarding } from "@/lib/hooks/useUserOnboarding";
 import Link from "next/link";
 
 interface MemberAddresses {
@@ -47,6 +48,7 @@ export default function CreateSquadForm({
 }) {
   const router = useRouter();
   const { publicKey, connected, sendTransaction } = useWallet();
+  const { markMultisigCreated } = useUserOnboarding();
 
   const connection = new Connection(rpc || clusterApiUrl("mainnet-beta"));
   const validationRules = getValidationRules();
@@ -106,7 +108,10 @@ export default function CreateSquadForm({
         }
       }
 
-      document.cookie = `x-multisig=${multisig.toBase58()}; path=/`;
+      // Multisig is now read from Firestore, no need to set cookie
+
+      // Mark user as having created their first multisig
+      await markMultisigCreated();
 
       return { signature, multisig: multisig.toBase58() };
     } catch (error: any) {
@@ -234,13 +239,16 @@ export default function CreateSquadForm({
           </label>
           <Input
             type="number"
-            placeholder="Approval threshold for execution"
-            defaultValue={formState.values.threshold}
+            placeholder="Auto-set to number of members (all must approve)"
+            value={formState.values.threshold}
             onChange={(e) =>
               handleChange("threshold", parseInt(e.target.value))
             }
-            className=""
+            className="bg-zinc-800/50"
           />
+          <p className="text-xs text-zinc-400">
+            Currently set to {formState.values.threshold} - all members must approve. You can manually adjust if needed.
+          </p>
           {formState.errors.threshold && (
             <div className="mt-1.5 text-red-500 text-xs">
               {formState.errors.threshold}
@@ -294,7 +302,7 @@ export default function CreateSquadForm({
                   <CheckSquare className="w-4 h-4 text-green-600" />
                   <div className="flex flex-col space-y-0.5">
                     <p className="font-semibold">
-                      Squad Created:{" "}
+                      Multisig Created:{" "}
                       <span className="font-normal">
                         {res.multisig.slice(0, 4) +
                           "..." +
@@ -302,7 +310,7 @@ export default function CreateSquadForm({
                       </span>
                     </p>
                     <p className="font-light">
-                      Your new Squad has been set as active.
+                      Your new multisig has been set as active.
                     </p>
                   </div>
                 </div>
@@ -315,7 +323,7 @@ export default function CreateSquadForm({
                     className="w-4 h-4 hover:text-stone-500"
                   />
                   <Link
-                    href={`https://explorer.solana.com/address/${res.multisig}`}
+                    href={`https://solscan.io/account/${res.multisig}`}
                     target="_blank"
                     rel="noreferrer"
                     passHref
@@ -325,11 +333,11 @@ export default function CreateSquadForm({
                 </div>
               </div>
             ),
-            error: (e) => `Failed to create squad: ${e}`,
+            error: (e) => `Failed to create multisig: ${e}`,
           })
         }
       >
-        Create Squad
+        Create Multisig
       </Button>
     </>
   );

@@ -1,8 +1,7 @@
 import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
-import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import * as multisig from "@sqds/multisig";
+import { PublicKey } from "@solana/web3.js";
 import { Toaster } from "@/components/ui/sonner";
 import ConnectWallet from "@/components/ConnectWalletButton";
 import {
@@ -14,6 +13,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import RenderMultisigRoute from "@/components/RenderMultisigRoute";
+import WalletCookieSetter from "@/components/WalletCookieSetter";
+import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
 
 const AppLayout = async ({ children }: { children: React.ReactNode }) => {
   const tabs = [
@@ -42,30 +43,39 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
   const headersList = headers();
 
   const path = headersList.get("x-pathname");
-  const multisigCookie = headersList.get("x-multisig");
-  const multisig = await isValidPublicKey(multisigCookie!);
+  
+  // Get wallet address and query Firestore for multisig
+  const walletAddress = headersList.get("x-wallet");
+  let multisigCookie: string | null = null;
+  if (walletAddress) {
+    multisigCookie = await getMultisigFromFirestore(walletAddress);
+  }
+  
+  const multisig = await isValidPublicKey(multisigCookie || "");
 
   return (
     <>
-      <div className="flex flex-col md:flex-row h-screen min-w-full bg-white">
+      <WalletCookieSetter />
+      <div className="flex flex-col md:flex-row h-screen min-w-full bg-black">
         <aside
           id="sidebar"
-          className="hidden md:block md:left-0 md:top-0 md:w-3/12 lg:w-3/12 z-40 h-auto md:h-screen md:fixed"
+          className="hidden md:block md:left-0 md:top-0 md:w-64 z-40 h-auto md:h-screen md:fixed"
           aria-label="Sidebar"
         >
-          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between md:border-r border-slate-200 px-3 py-4  bg-slate-200">
+          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between md:border-r border-zinc-800 px-4 py-6 bg-black/90 backdrop-blur-sm">
             <div>
-              {" "}
               <Link href="/">
-                <div className="mb-10 flex items-center rounded-lg px-3 py-2 text-slate-900 dark:text-white">
+                <div className="mb-10 flex items-center gap-3 px-3 py-2 text-white hover:opacity-80 transition-opacity">
                   <Image
-                    src="https://drive.google.com/uc?export=download&id=1UjZG82vU6aQHiGxzZEzoTneP7TTSsKda"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    style={{ width: "150px", height: "auto" }}
-                    alt="Mercure Logo"
+                    src="/logo.png"
+                    alt="Nova Logo"
+                    width={32}
+                    height={32}
+                    className="w-8 h-8"
                   />
+                  <h1 className="logo-text text-2xl font-bold tracking-wider text-white">
+                    NOVA
+                  </h1>
                 </div>
               </Link>
               <ul className="space-y-2 text-sm font-medium">
@@ -73,17 +83,15 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                   <li key={tab.route}>
                     <a
                       href={tab.route}
-                      className={`flex items-center rounded-lg px-4 py-3 text-slate-900 
-                    
-        ${
-          (path!.startsWith(`${tab.route}/`) && tab.route != "/") ||
-          tab.route === path
-            ? "bg-slate-400"
-            : "hover:bg-slate-400"
-        }`}
+                      className={`flex items-center px-4 py-3 text-white transition-all ${
+                        (path!.startsWith(`${tab.route}/`) && tab.route != "/") ||
+                        tab.route === path
+                          ? "bg-zinc-800 border-l-2 border-orange-500"
+                          : "hover:bg-zinc-900 opacity-70 hover:opacity-100"
+                      }`}
                     >
                       {tab.icon}
-                      <span className="ml-3 flex-1 whitespace-nowrap text-base text-black">
+                      <span className="ml-3 flex-1 whitespace-nowrap text-base font-medium">
                         {tab.name}
                       </span>
                     </a>
@@ -98,7 +106,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
 
         <aside
           id="mobile-navbar"
-          className="block md:hidden inset-x-0 bottom-0 z-50 bg-slate-20 p-2 fixed bg-slate-300"
+          className="block md:hidden inset-x-0 bottom-0 z-50 p-2 fixed bg-black/90 backdrop-blur-sm border-t border-zinc-800"
           aria-label="Mobile navbar"
         >
           <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium mt-1 ">
@@ -106,10 +114,10 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
               <Link href={tab.route} key={tab.route}>
                 <button
                   type="button"
-                  className="inline-flex flex-col items-center justify-center px-5 hover:bg-slate-400 rounded-md py-2 group"
+                  className="inline-flex flex-col items-center justify-center px-5 hover:bg-zinc-800 py-2 group text-white transition-colors"
                 >
                   {tab.icon}
-                  <span className="flex-1 whitespace-nowrap text-sm text-slate-900">
+                  <span className="flex-1 whitespace-nowrap text-xs mt-1">
                     {tab.name}
                   </span>
                 </button>
@@ -118,7 +126,9 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           </div>
         </aside>
 
-        <RenderMultisigRoute multisig={multisig} children={children} />
+        <div className="md:ml-64 flex-1">
+          <RenderMultisigRoute multisig={multisig} children={children} />
+        </div>
       </div>
       <Toaster
         expand
@@ -136,13 +146,7 @@ export default AppLayout;
 
 const isValidPublicKey = async (multisigString: string) => {
   try {
-    const multisigPubkey = new PublicKey(multisigString); // This will throw an error if the string is not a valid public key
-    const rpcUrl = headers().get("x-rpc-url");
-    const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"));
-    await multisig.accounts.Multisig.fromAccountAddress(
-      connection,
-      multisigPubkey
-    );
+    new PublicKey(multisigString);
     return true;
   } catch (e) {
     return false;

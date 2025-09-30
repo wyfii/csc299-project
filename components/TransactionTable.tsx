@@ -1,4 +1,4 @@
-import * as multisig from "@sqds/multisig";
+import * as multisig from "nova-multisig-sdk";
 import ApproveButton from "./ApproveButton";
 import ExecuteButton from "./ExecuteButton";
 import RejectButton from "./RejectButton";
@@ -107,7 +107,7 @@ function ActionButtons({
 }
 
 function createSolanaExplorerUrl(publicKey: string, rpcUrl: string): string {
-  const baseUrl = "https://explorer.solana.com/address/";
+  const baseUrl = "https://solscan.io/account/";
   const clusterQuery = "?cluster=custom&customUrl=";
   const encodedRpcUrl = encodeURIComponent(rpcUrl);
 

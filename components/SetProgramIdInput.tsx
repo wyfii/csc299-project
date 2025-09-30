@@ -16,7 +16,7 @@ const SetProgramIdInput = () => {
     // Needs to use an RPC that isn't the public endpoint
     // const programTest = await isProgram(programId);
     if (publicKeyTest) {
-      document.cookie = `x-program-id=${programId}`;
+      document.cookie = `x-program-id=${programId}; path=/`;
       setProgramId("");
       router.refresh();
     } else {
