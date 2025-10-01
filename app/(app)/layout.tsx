@@ -63,7 +63,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           className="hidden md:block md:left-0 md:top-0 md:w-64 z-40 h-auto md:h-screen md:fixed"
           aria-label="Sidebar"
         >
-          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between border border-zinc-900 px-4 py-6 bg-zinc-950/50 md:m-4 md:mr-2 md:rounded-lg">
+          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between border border-zinc-900 px-4 py-6 bg-zinc-950/30 md:m-4 md:mr-2 md:rounded-xl">
             <div>
               <Link href="/">
                 <div className="mb-10 flex items-center gap-3 px-3 py-2 text-white hover:opacity-80 transition-opacity">
@@ -79,25 +79,30 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                   </h1>
                 </div>
               </Link>
-              <ul className="space-y-2 text-sm font-medium">
-                {tabs.map((tab) => (
-                  <li key={tab.route}>
-                    <a
-                      href={tab.route}
-                      className={`flex items-center px-4 py-3 text-white transition-all font-mono text-sm rounded ${
-                        (path!.startsWith(`${tab.route}/`) && tab.route != "/") ||
-                        tab.route === path
-                          ? "bg-zinc-900 border-l-2 border-orange-500"
-                          : "hover:bg-zinc-900/50 opacity-60 hover:opacity-100"
-                      }`}
-                    >
-                      {tab.icon}
-                      <span className="ml-3 flex-1 whitespace-nowrap text-base font-medium">
-                        {tab.name}
-                      </span>
-                    </a>
-                  </li>
-                ))}
+              <ul className="space-y-1 text-sm font-medium">
+                {tabs.map((tab) => {
+                  const isActive = (path!.startsWith(`${tab.route}/`) && tab.route != "/") || tab.route === path;
+                  return (
+                    <li key={tab.route}>
+                      <a
+                        href={tab.route}
+                        className={`flex items-center px-4 py-3 text-white transition-all text-sm relative ${
+                          isActive
+                            ? "opacity-100"
+                            : "opacity-50 hover:opacity-80"
+                        }`}
+                      >
+                        {tab.icon}
+                        <span className="ml-3 flex-1 whitespace-nowrap text-base font-medium">
+                          {tab.name}
+                        </span>
+                        {isActive && (
+                          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white rounded-full" />
+                        )}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 

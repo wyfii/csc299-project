@@ -88,10 +88,8 @@ export default async function Home() {
   }
 
   return (
-    <main className="">
+    <main className="p-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-medium mb-6 text-white">Vault</h1>
-        
         <PortfolioValue
           solBalance={solBalance}
           tokens={tokensInWallet}
@@ -100,11 +98,6 @@ export default async function Home() {
         
         <MultisigAddressDisplay multisigAddress={multisigCookie} />
 
-        <VaultDisplayer
-          multisigPdaString={multisigCookie}
-          vaultIndex={vaultIndex}
-          programId={programIdCookie}
-        />
         <TokenList
           solBalance={solBalance}
           tokens={tokensInWallet}
@@ -112,6 +105,12 @@ export default async function Home() {
           multisigPda={multisigCookie}
           vaultIndex={vaultIndex}
           programId={programIdCookie!}
+        />
+
+        <VaultDisplayer
+          multisigPdaString={multisigCookie}
+          vaultIndex={vaultIndex}
+          programId={programIdCookie}
         />
       </div>
     </main>

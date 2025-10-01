@@ -65,20 +65,20 @@ export function PortfolioValue({ solBalance, tokens }: PortfolioValueProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-zinc-950/50 border border-zinc-900 rounded-lg p-8 mb-6"
+      transition={{ duration: 0.3 }}
+      className="bg-zinc-950 border border-zinc-900 rounded-lg p-6 mb-6"
     >
       <div className="text-center">
-        <p className="text-sm text-gray-500 font-mono mb-2">Total Value</p>
-        <h2 className="text-5xl md:text-6xl font-bold text-white font-mono tracking-tight">
+        <p className="text-xs text-gray-500 mb-2">TOTAL VALUE</p>
+        <h2 className="text-4xl md:text-5xl font-medium text-white tracking-tight">
           ${displayValue.toLocaleString('en-US', { 
             minimumFractionDigits: 2, 
             maximumFractionDigits: 2 
           })}
         </h2>
-        <p className="text-xs text-gray-600 font-mono mt-2">
+        <p className="text-xs text-gray-600 mt-2">
           {(solBalance / LAMPORTS_PER_SOL).toFixed(4)} SOL @ ${solPrice.toFixed(2)}
         </p>
       </div>

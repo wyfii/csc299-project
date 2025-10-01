@@ -201,7 +201,8 @@ const SendTokens = ({
                 return;
               }
             }}
-        >Send Tokens</Button>
+            className="bg-white text-black hover:bg-gray-200 rounded-full px-4 py-1.5 text-xs font-medium transition-colors"
+        >SEND</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
