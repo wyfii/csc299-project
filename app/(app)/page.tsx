@@ -71,14 +71,21 @@ export default async function Home() {
     programId,
   })[0];
 
-  const solBalance = await connection.getBalance(multisigVault);
+  let solBalance = 0;
+  let tokensInWallet: any = { value: [] };
 
-  const tokensInWallet = await connection.getParsedTokenAccountsByOwner(
-    multisigVault,
-    {
-      programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
-    }
-  );
+  try {
+    solBalance = await connection.getBalance(multisigVault);
+    tokensInWallet = await connection.getParsedTokenAccountsByOwner(
+      multisigVault,
+      {
+        programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+      }
+    );
+  } catch (error) {
+    console.error("Failed to fetch vault data:", error);
+    // Continue with default values (0 balance, no tokens)
+  }
 
   return (
     <main className="">

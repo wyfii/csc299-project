@@ -15,7 +15,10 @@ export function range(start: number, end: number): number[] {
 
 // Centralized RPC configuration for Solana connections
 // Using Helius RPC for better performance and higher rate limits
-export const HARDCODED_RPC_URL = "https://mainnet.helius-rpc.com/?api-key=bdafb51b-3059-4f6e-a2a3-5b4669dc5937";
+// Can be overridden with NEXT_PUBLIC_RPC_URL environment variable
+export const HARDCODED_RPC_URL = 
+  process.env.NEXT_PUBLIC_RPC_URL || 
+  "https://mainnet.helius-rpc.com/?api-key=bdafb51b-3059-4f6e-a2a3-5b4669dc5937";
 
 export const HARDCODED_RPC_HEADERS: Record<string, string> = {
   "Content-Type": "application/json",
