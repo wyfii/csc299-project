@@ -60,7 +60,7 @@ export default async function TransactionsPage({
     return (
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Transactions</h1>
+          <h1 className="text-2xl font-medium text-white">Transactions</h1>
         </div>
       </div>
     );
@@ -72,7 +72,7 @@ export default async function TransactionsPage({
     return (
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Transactions</h1>
+          <h1 className="text-2xl font-medium text-white">Transactions</h1>
         </div>
       </div>
     );
@@ -95,7 +95,7 @@ export default async function TransactionsPage({
     return (
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Transactions</h1>
+          <h1 className="text-2xl font-medium text-white">Transactions</h1>
         </div>
         <p className="text-sm text-slate-600">
           Multisig not found at {multisigCookie}. Check the multisig address,
@@ -139,7 +139,7 @@ export default async function TransactionsPage({
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Transactions</h1>
+        <h1 className="text-2xl font-medium text-white">Transactions</h1>
         <CreateTransaction
           rpcUrl={HARDCODED_RPC_URL}
           multisigPda={multisigCookie}

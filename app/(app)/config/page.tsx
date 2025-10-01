@@ -36,7 +36,7 @@ const ConfigurationPage = async () => {
   if (!multisigCookie) {
     return (
       <div className="">
-        <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+        <h1 className="text-2xl font-medium mb-6 text-white">Configuration</h1>
       </div>
     );
   }
@@ -46,7 +46,7 @@ const ConfigurationPage = async () => {
   } catch {
     return (
       <div className="">
-        <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+        <h1 className="text-2xl font-medium mb-6 text-white">Configuration</h1>
       </div>
     );
   }
@@ -67,7 +67,7 @@ const ConfigurationPage = async () => {
   } catch (e) {
     return (
       <div className="">
-        <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+        <h1 className="text-2xl font-medium mb-6 text-white">Configuration</h1>
         <p className="text-sm text-slate-600">
           Multisig not found at {multisigCookie}. Check the multisig address,
           selected program ID, and RPC/cluster, then try again.
@@ -77,7 +77,7 @@ const ConfigurationPage = async () => {
   }
   return (
     <div className="">
-      <h1 className="text-3xl font-bold mb-4">Multisig Configuration</h1>
+      <h1 className="text-2xl font-medium mb-6 text-white">Configuration</h1>
       <Card>
         <CardHeader>
           <CardTitle>Members</CardTitle>

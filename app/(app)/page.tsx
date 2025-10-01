@@ -82,7 +82,7 @@ export default async function Home() {
   return (
     <main className="">
       <div>
-        <h1 className="text-3xl font-bold mb-4 font-sans">Overview</h1>
+        <h1 className="text-2xl font-medium mb-6 text-white">Vault</h1>
         
         <MultisigAddressDisplay multisigAddress={multisigCookie} />
 

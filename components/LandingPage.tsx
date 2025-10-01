@@ -9,6 +9,7 @@ import { Wallet } from "lucide-react";
 import MultisigOnboarding from "./MultisigOnboarding";
 import { useUserOnboarding } from "@/lib/hooks/useUserOnboarding";
 import { trackPageView, trackUserAction } from "@/lib/analytics";
+import Image from "next/image";
 
 export default function LandingPage() {
   const { connected } = useWallet();
@@ -65,8 +66,7 @@ export default function LandingPage() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"
           />
-          <h2 className="text-2xl font-bold text-white mb-2">Creating Your Multisig</h2>
-          <p className="text-gray-400">Please wait while we finalize everything...</p>
+          <h2 className="text-xl font-medium text-white mb-2 font-mono">Creating vault...</h2>
         </div>
       </div>
     );
@@ -92,12 +92,9 @@ export default function LandingPage() {
   console.log("🌟 Not connected - showing landing page");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center antialiased bg-gradient-to-br from-black via-zinc-950 to-black">
-      {/* Simple gradient overlay - no animations */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:64px_64px] pointer-events-none" />
-      
+    <div className="fixed inset-0 z-50 flex items-center justify-center antialiased bg-black">
       {/* Centered Card */}
-      <div className="relative z-10 w-full max-w-md mx-4 opacity-100">
+      <div className="relative z-10 w-full max-w-md mx-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,29 +103,28 @@ export default function LandingPage() {
             delay: 0.2,
             ease: "easeOut"
           }}
-          className="bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 p-12 shadow-2xl rounded-xl"
+          className="bg-zinc-950 border border-zinc-900 p-12 rounded-lg"
         >
           <div className="text-center space-y-8">
-            <div className="space-y-3">
-              <h1 className="text-3xl font-bold text-white font-sans">
-                Welcome to Nova
+            <div className="space-y-4">
+              <Image
+                src="/logo.png"
+                alt="Nova"
+                width={64}
+                height={64}
+                className="w-16 h-16 mx-auto"
+              />
+              <h1 className="logo-text text-4xl font-bold text-white tracking-wider">
+                NOVA VAULT
               </h1>
-              <p className="text-gray-400 text-sm font-sans">
-                Connect your wallet to access your multisig
-              </p>
             </div>
 
             <Button
               onClick={() => walletModal.setVisible(true)}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-black font-bold text-base py-6 transition-colors font-sans shadow-lg shadow-orange-500/30"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-black font-mono text-sm py-6 transition-colors"
             >
-              <Wallet className="w-5 h-5 mr-2" />
               Connect Wallet
             </Button>
-
-            <p className="text-xs text-gray-500 pt-4 font-sans">
-              Secure Multisig Wallet
-            </p>
           </div>
         </motion.div>
       </div>

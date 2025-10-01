@@ -422,20 +422,18 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       subtitle: "Add members to your wallet",
       icon: Users,
       content: (
-        <div className="flex flex-col items-center justify-center py-8 space-y-8">
+        <div className="flex flex-col items-center justify-center py-12 space-y-6">
           <Image
             src="/logo.png"
             alt="Nova"
-            width={96}
-            height={96}
-            className="w-20 h-20 md:w-24 md:h-24"
+            width={80}
+            height={80}
+            className="w-16 h-16 md:w-20 md:h-20"
           />
-          <div className="text-center space-y-2">
-            <p className="text-gray-400 text-sm">
-              Multi-signature wallet for shared control
-            </p>
-          </div>
-            </div>
+          <h1 className="logo-text text-4xl md:text-5xl font-bold text-white tracking-wider">
+            NOVA VAULT
+          </h1>
+        </div>
       ),
     },
     {
