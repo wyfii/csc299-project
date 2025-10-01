@@ -288,7 +288,7 @@ const ExecuteButton = ({
       const errorStr = JSON.stringify(error);
       
       if (errorStr.includes('6005') || errorStr.includes('not a member')) {
-        errorMessage = 'You are NOT a member of this multisig! You cannot execute transactions on it.';
+        errorMessage = 'You are NOT a member of this multi-sig! You cannot execute transactions on it.';
         toast.error(
           <div className="flex flex-col gap-1">
             <span>❌ {errorMessage}</span>

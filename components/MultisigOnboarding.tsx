@@ -119,7 +119,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
 
       if (useNVAIPayment) {
         // NVAI Burn flow - VALIDATE FIRST, then burn
-        toast.loading("🔍 Validating multisig creation...", { id: "create-multisig" });
+        toast.loading("🔍 Validating multi-sig creation...", { id: "create-multisig" });
         
         // Calculate NVAI to burn
         const nvaiPrice = await getNVAIPriceInSOL();
@@ -234,7 +234,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         // NVAI burned successfully
         
         // NOW call admin API for real
-        toast.loading("Admin creating your multisig...", { id: "create-multisig" });
+        toast.loading("Creating your multi-sig...", { id: "create-multisig" });
         // Calling admin API to create multisig
         
         const adminResponse = await fetch('/api/admin-create-multisig', {
@@ -304,7 +304,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         trackMultisigCreated('NVAI', members.length);
         trackUserAction('multisig_creation_success', { method: 'NVAI', memberCount: members.length });
         
-        toast.success("✅ Multisig created with NVAI burn!", { id: "create-multisig", duration: 3000 });
+        toast.success("✅ Multi-sig created with NVAI burn!", { id: "create-multisig", duration: 3000 });
         
         // Wait a moment for everything to propagate
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -314,7 +314,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       }
 
       // Standard SOL payment flow
-      toast.loading("Creating your Multisig...", { id: "create-multisig" });
+      toast.loading("Creating your multi-sig...", { id: "create-multisig" });
 
       const { transaction, multisig: multisigPda } = await createMultisig(
         connection,
@@ -394,7 +394,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       trackMultisigCreated('SOL', members.length);
       trackUserAction('multisig_creation_success', { method: 'SOL', memberCount: members.length });
 
-      toast.success("Multisig created successfully! 🎉", { id: "create-multisig" });
+      toast.success("Multi-sig created successfully! 🎉", { id: "create-multisig" });
 
       // Wait for everything to propagate before completing
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -411,29 +411,20 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         memberCount: members.length 
       });
       
-      toast.error(`Failed to create Multisig: ${error.message}`, { id: "create-multisig" });
+      toast.error(`Failed to create multi-sig: ${error.message}`, { id: "create-multisig" });
       setIsCreating(false);
     }
   };
 
   const steps = [
     {
-      title: "Create Multisig",
+      title: "Create Multi-Sig",
       subtitle: "Add members to your wallet",
       icon: Users,
       content: (
-        <div className="flex flex-col items-center justify-center py-12 space-y-6">
-          <Image
-            src="/logo.png"
-            alt="Nova"
-            width={80}
-            height={80}
-            className="w-16 h-16 md:w-20 md:h-20"
-          />
-          <h1 className="logo-text text-4xl md:text-5xl font-bold text-white tracking-wider">
-            NOVA VAULT
-          </h1>
-        </div>
+        <div className="flex flex-col items-center justify-center py-12">
+          {/* Empty content - just showing title and subtitle */}
+            </div>
       ),
     },
     {
@@ -683,26 +674,24 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   <div className="py-4">{currentStepData.content}</div>
 
                   {/* Actions */}
-                  <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-0 pt-4">
-                    {step > 0 ? (
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 pt-4">
+                    {step > 0 && (
                       <Button
                         variant="ghost"
                         onClick={() => setStep(step - 1)}
                         disabled={isCreating}
-                        className="font-mono text-xs w-full sm:w-auto border border-zinc-900 hover:bg-zinc-950"
+                        className="font-mono text-xs px-6 border border-zinc-900 hover:bg-zinc-950"
                       >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back
                       </Button>
-                    ) : (
-                      <div className="hidden sm:block" />
                     )}
 
                     {step < steps.length - 1 ? (
                       <Button
                         onClick={() => setStep(step + 1)}
                         disabled={(step === 1 && !canProceedToCreation)}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-6 w-full sm:w-auto"
+                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-8"
                       >
                         Continue
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -711,7 +700,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                       <Button
                         onClick={createMultisigWallet}
                         disabled={isCreating}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-8 w-full sm:w-auto"
+                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-12"
                       >
                         {isCreating ? (
                           <>

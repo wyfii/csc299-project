@@ -26,7 +26,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
   const resetMultisig = () => {
     if (confirm("Reset to your wallet's multisig from Firestore?")) {
       document.cookie = 'x-multisig=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
-      toast.success("Resetting to your multisig...", { duration: 2000 });
+      toast.success("Resetting to your multi-sig...", { duration: 2000 });
       setTimeout(() => location.reload(), 1000);
     }
   };
