@@ -121,9 +121,9 @@ export default function LandingPage() {
 
             <Button
               onClick={() => walletModal.setVisible(true)}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-black font-mono text-sm py-6 transition-colors"
+              className="w-full bg-white text-black hover:bg-gray-200 rounded-full text-xs font-medium py-3 transition-colors"
             >
-              Connect Wallet
+              CONNECT WALLET
             </Button>
           </div>
         </motion.div>

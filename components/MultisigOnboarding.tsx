@@ -549,36 +549,28 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
     },
     {
       title: "Confirm",
-      subtitle: "Review and create",
+      subtitle: "Review your vault",
       icon: Check,
       content: (
-        <div  className="space-y-6">
-          <div  className="bg-zinc-800/50 rounded-lg p-4 md:p-6 space-y-4">
-            <h4 className="font-semibold text-white font-sans flex items-center text-sm md:text-base">
-              <Users className="w-4 h-4 md:w-5 md:h-5 mr-2 text-orange-500" />
-              Multisig Members ({Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length} total)
-            </h4>
+        <div className="space-y-4">
+          <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-gray-500">MEMBERS</span>
+              <span className="text-xs text-gray-500">{Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}</span>
+            </div>
             <div className="space-y-2">
               {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).map((addr, index) => {
                 const isCreator = addr === publicKey?.toBase58();
                 return (
                   <div
                     key={addr}
-                    className={`flex items-center justify-between p-2 md:p-3 rounded-lg ${
-                      isCreator 
-                        ? "bg-orange-500/10 border border-orange-500/20" 
-                        : "bg-zinc-700/50"
-                    }`}
+                    className="flex items-center justify-between text-xs"
                   >
-                    <span className="text-xs md:text-sm text-gray-300 font-mono truncate mr-2">
-                      {addr?.slice(0, 4)}...{addr?.slice(-4)}
+                    <span className="text-gray-400 font-mono">
+                      {addr?.slice(0, 6)}...{addr?.slice(-6)}
                     </span>
-                    <span className={`text-xs px-2 py-1 rounded font-sans font-semibold whitespace-nowrap ${
-                      isCreator 
-                        ? "bg-orange-500 text-black" 
-                        : "text-gray-400"
-                    }`}>
-                      {isCreator ? "You" : `#${index}`}
+                    <span className="text-gray-600">
+                      {isCreator ? "You" : `Member ${index + 1}`}
                     </span>
                   </div>
                 );
@@ -586,53 +578,22 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
           </div>
 
-          <div  className="bg-zinc-800/50 rounded-lg p-4 md:p-6">
-            <h4 className="font-semibold text-white font-sans flex items-center mb-2 text-sm md:text-base">
-              <Shield className="w-4 h-4 md:w-5 md:h-5 mr-2 text-orange-500" />
-              Approval Threshold
-            </h4>
-            <p className="text-gray-300 font-sans text-sm md:text-base">
-              <span className="text-xl md:text-2xl font-bold text-orange-500">
-                {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length} out of {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}
-              </span>{" "}
-              approvals required
-            </p>
-            <p className="text-xs text-gray-500 mt-2 font-sans">
-              (All members must approve for maximum security)
-            </p>
-          </div>
-
-          <div  className="bg-zinc-800/50 rounded-lg p-4 md:p-6">
-            <h4 className="font-semibold text-white font-sans flex items-center mb-2 text-sm md:text-base">
-              <Coins className="w-4 h-4 md:w-5 md:h-5 mr-2 text-orange-500" />
-              Payment Method
-            </h4>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-              {useNVAIPayment ? (
-                <>
-                  <div className="flex items-center gap-2">
-                    {getTokenImage("3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin", 20)}
-                    <span className="text-orange-400 font-bold text-sm md:text-base">NVAI Burn</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2">
-                    {getTokenImage("SOL", 20)}
-                    <span className="text-white font-bold text-sm md:text-base">SOL Payment</span>
-                  </div>
-                  <span className="text-gray-400 text-xs">(~{MULTISIG_CREATION_COST_SOL} SOL)</span>
-                </>
-              )}
+          <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-gray-500">THRESHOLD</span>
+              <span className="text-sm text-white font-medium">
+                {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}/{Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}
+              </span>
             </div>
           </div>
 
-          <div  className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-            <p className="text-sm text-blue-200 font-sans">
-              💡 Once created, you can propose transactions that will need{" "}
-              {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length} approvals (all members) before execution.
-              All members can view pending proposals.
-            </p>
+          <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-gray-500">PAYMENT</span>
+              <span className="text-sm text-white font-medium">
+                {useNVAIPayment ? "NVAI" : `${MULTISIG_CREATION_COST_SOL} SOL`}
+              </span>
+            </div>
           </div>
         </div>
       ),
@@ -666,11 +627,11 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   className="space-y-6"
                 >
                   {/* Icon & Title */}
-                  <div className="text-center space-y-1">
-                    <h2 className="text-xl md:text-2xl font-medium text-white font-mono">
+                  <div className="text-center">
+                    <h2 className="text-xl md:text-2xl font-medium text-white">
                       {currentStepData.title}
                     </h2>
-                    <p className="text-xs md:text-sm text-gray-600 font-mono">{currentStepData.subtitle}</p>
+                    <p className="text-xs md:text-sm text-gray-500 mt-1">{currentStepData.subtitle}</p>
                   </div>
 
                   {/* Step Content */}
@@ -683,10 +644,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                         variant="ghost"
                         onClick={() => setStep(step - 1)}
                         disabled={isCreating}
-                        className="font-mono text-xs px-6 border border-zinc-900 hover:bg-zinc-950"
+                        className="bg-transparent text-white border border-zinc-800 hover:bg-zinc-900 rounded-full px-6 py-2 text-xs font-medium"
                       >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back
+                        <ArrowLeft className="w-3 h-3 mr-2" />
+                        BACK
                       </Button>
                     )}
 
@@ -694,25 +655,25 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                       <Button
                         onClick={() => setStep(step + 1)}
                         disabled={(step === 1 && !canProceedToCreation)}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-8"
+                        className="bg-white text-black hover:bg-gray-200 rounded-full px-8 py-2 text-xs font-medium"
                       >
-                        Continue
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                        CONTINUE
+                        <ArrowRight className="w-3 h-3 ml-2" />
                       </Button>
                     ) : (
                       <Button
                         onClick={createMultisigWallet}
                         disabled={isCreating}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-12"
+                        className="bg-white text-black hover:bg-gray-200 rounded-full px-12 py-2 text-xs font-medium"
                       >
                         {isCreating ? (
                           <>
                             <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
-                            Creating...
+                            CREATING...
                           </>
                         ) : (
                           <>
-                            Create
+                            CREATE VAULT
                           </>
                         )}
                       </Button>
