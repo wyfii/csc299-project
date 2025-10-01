@@ -33,11 +33,12 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
       icon: <Users />,
       route: "/config",
     },
-    {
-      name: "Settings",
-      icon: <Settings />,
-      route: "/settings",
-    },
+    // Hidden for now
+    // {
+    //   name: "Settings",
+    //   icon: <Settings />,
+    //   route: "/settings",
+    // },
   ];
 
   const headersList = headers();
