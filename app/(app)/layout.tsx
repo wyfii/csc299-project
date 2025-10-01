@@ -112,23 +112,34 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
 
         <aside
           id="mobile-navbar"
-          className="block md:hidden inset-x-0 bottom-0 z-50 p-2 fixed bg-black/90 backdrop-blur-sm border-t border-zinc-800"
+          className="block md:hidden inset-x-0 bottom-0 z-50 fixed"
           aria-label="Mobile navbar"
         >
-          <div className="grid h-full max-w-lg grid-cols-3 mx-auto font-medium mt-1 ">
-            {tabs.map((tab) => (
-              <Link href={tab.route} key={tab.route}>
-                <button
-                  type="button"
-                  className="inline-flex flex-col items-center justify-center px-5 hover:bg-zinc-800 py-2 group text-white transition-colors"
-                >
-                  {tab.icon}
-                  <span className="flex-1 whitespace-nowrap text-xs mt-1">
-                    {tab.name}
-                  </span>
-                </button>
-              </Link>
-            ))}
+          <div className="flex items-center justify-center p-4 pb-6">
+            <div className="bg-black/40 backdrop-blur-xl border border-zinc-800/50 rounded-full p-2 shadow-2xl">
+              <div className="flex gap-2">
+                {tabs.map((tab) => {
+                  const isActive = path === tab.route || (path?.startsWith(`${tab.route}/`) && tab.route !== "/");
+                  return (
+                    <Link href={tab.route} key={tab.route}>
+                      <button
+                        type="button"
+                        className={`inline-flex flex-col items-center justify-center px-6 py-3 rounded-full transition-all ${
+                          isActive 
+                            ? "bg-white/20 text-white" 
+                            : "text-white/50 hover:text-white/80 hover:bg-white/10"
+                        }`}
+                      >
+                        {tab.icon}
+                        <span className="text-xs mt-1 font-medium">
+                          {tab.name}
+                        </span>
+                      </button>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </aside>
 
