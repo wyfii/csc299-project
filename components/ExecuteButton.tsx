@@ -79,11 +79,7 @@ const ExecuteButton = ({
 
       // Check member wallet balance
       const memberBalance = await connection.getBalance(member);
-      console.log('💰 Member Wallet Balance:', {
-        wallet: member.toBase58(),
-        balance: memberBalance / 1000000000,
-        balanceLamports: memberBalance,
-      });
+      // Member wallet balance checked
 
       // Get vault address and check its balance
       const vaultPda = multisig.getVaultPda({
@@ -93,18 +89,9 @@ const ExecuteButton = ({
       })[0];
       
       const vaultBalance = await connection.getBalance(vaultPda);
-      console.log('🏦 Vault Balance:', {
-        vault: vaultPda.toBase58(),
-        balance: vaultBalance / 1000000000,
-        balanceLamports: vaultBalance,
-      });
+      // Vault balance checked
 
-      console.log('📋 Execution Details:', {
-        multisigPda: multisigPda,
-        member: member.toBase58(),
-        transactionIndex: bigIntTransactionIndex.toString(),
-        programId: programId ? programId : multisig.PROGRAM_ID.toBase58(),
-      });
+      // Execution details prepared
 
       const [transactionPda] = multisig.getTransactionPda({
         multisigPda: new PublicKey(multisigPda),
@@ -244,7 +231,7 @@ const ExecuteButton = ({
           skipPreflight: true,
         });
         lastSignature = signature;
-        console.log(`✅ Transaction ${i + 1} signature:`, signature);
+        // Transaction sent successfully
         
         toast.loading(`Confirming execution (${i + 1}/${signedTransactions.length})...`, {
           id: 'transaction',

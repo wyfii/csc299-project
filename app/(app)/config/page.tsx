@@ -149,7 +149,8 @@ const ConfigurationPage = async () => {
           </CardContent>
         </Card>
       </div>
-      <div className="pb-4">
+      {/* Hidden for now - Change program Upgrade authority */}
+      {/* <div className="pb-4">
         <Card className="w-1/2">
           <CardHeader>
             <CardTitle>Change program Upgrade authority</CardTitle>
@@ -167,7 +168,7 @@ const ConfigurationPage = async () => {
             />
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 };

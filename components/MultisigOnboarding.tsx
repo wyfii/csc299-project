@@ -230,7 +230,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         toast.loading("Confirming NVAI burn...", { id: "create-multisig" });
         await connection.confirmTransaction(burnSig, "confirmed");
         
-        console.log("✅ NVAI burned! Signature:", burnSig);
+        // NVAI burned successfully
         
         // NOW call admin API for real
         toast.loading("Admin creating your multisig...", { id: "create-multisig" });
@@ -335,7 +335,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       await connection.confirmTransaction(signature, "confirmed");
 
       const newMultisigAddress = multisigPda.toBase58();
-      console.log("✅ Multisig created:", newMultisigAddress);
+      // Multisig created successfully
       
       // Show success with Solscan link
       toast.success(

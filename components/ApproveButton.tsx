@@ -180,15 +180,7 @@ const ApproveButton = ({
         throw new Error(`Failed to simulate: ${simError.message}`);
       }
       
-      console.log("📤 Sending transaction to wallet...");
-      console.log("Transaction details:", {
-        version: transaction.version,
-        signatures: transaction.signatures,
-        message: {
-          numInstructions: transaction.message.compiledInstructions.length,
-          recentBlockhash: transaction.message.recentBlockhash,
-        }
-      });
+      // Sending transaction to wallet for approval
       
       let signature;
       try {

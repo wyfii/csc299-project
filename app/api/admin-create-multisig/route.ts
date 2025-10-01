@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
     const createKeyPair = Keypair.fromSecretKey(Uint8Array.from(createKeySecret));
     
     // Admin wallet and create key initialized
-    console.log('✅ Multisig PDA:', multisigPda);
 
     // Connect to network
     const connection = new Connection(
@@ -62,7 +61,7 @@ export async function POST(request: NextRequest) {
     // Admin balance checked
     
     if (adminBalance < 15000000) { // Less than 0.015 SOL
-      console.error('❌ Admin wallet low on SOL:', adminBalance / 1000000000);
+      // Admin wallet low on SOL
       return NextResponse.json(
         { error: `Admin wallet has insufficient SOL (${(adminBalance / 1000000000).toFixed(4)} SOL). Please fund the admin wallet.` },
         { status: 500 }
@@ -80,7 +79,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Rebuild multisig creation from parameters
-    console.log('📝 Building multisig creation transaction...');
+    // Building multisig creation transaction
     
     // Get program config
     const [programConfig] = multisig.getProgramConfigPda({
@@ -98,7 +97,7 @@ export async function POST(request: NextRequest) {
       permissions: m.permissions,
     }));
 
-    console.log('✅ Rebuilt members:', membersList.length);
+    // Members list rebuilt
 
     // Create the multisig instruction
     const multisigIx = multisig.instructions.multisigCreateV2({
@@ -128,9 +127,7 @@ export async function POST(request: NextRequest) {
     // Sign with both admin and createKey
     tx.sign(adminKeypair, createKeyPair);
     
-    console.log('📤 Sending transaction to network...');
-    console.log('  Fee payer:', tx.feePayer?.toBase58());
-    console.log('  Blockhash:', blockhash);
+    // Sending transaction to network
     
     // Send transaction
     const signature = await connection.sendRawTransaction(tx.serialize(), {
@@ -138,9 +135,7 @@ export async function POST(request: NextRequest) {
       maxRetries: 3,
     });
     
-    console.log('✅ Transaction sent:', signature);
-    
-    console.log('⏳ Waiting for confirmation...');
+    // Transaction sent, waiting for confirmation
     
     // Wait for confirmation
     await connection.confirmTransaction({
@@ -149,7 +144,7 @@ export async function POST(request: NextRequest) {
       lastValidBlockHeight,
     });
     
-    console.log('🎉 Multisig created successfully!');
+    // Multisig created successfully
 
     return NextResponse.json({
       signature,
