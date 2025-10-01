@@ -38,8 +38,8 @@ export async function getMultisigFromFirestore(walletAddress: string): Promise<s
       return null;
     }
     
-    // Extract multisig address from the document name
-    // Document name format: "projects/{project}/databases/(default)/documents/users/{wallet}/multisigs/{multisig}"
+    // Extract multi-sig address from the document name
+    // Document name format: "projects/{project}/databases/(default)/documents/users/{wallet}/multisigs/{multi-sig}"
     const documentName = data.documents[0].name;
     const multisigAddress = documentName.split('/').pop();
     
@@ -49,7 +49,7 @@ export async function getMultisigFromFirestore(walletAddress: string): Promise<s
     console.log(`Found multisig for ${walletAddress}: ${multisigAddress}`);
     return multisigAddress;
   } catch (error) {
-    console.error("Error fetching multisig from Firestore:", error);
+    console.error("Error fetching multi-sig from Firestore:", error);
     // Don't cache errors
     return null;
   }

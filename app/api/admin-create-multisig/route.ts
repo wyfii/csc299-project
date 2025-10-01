@@ -151,10 +151,10 @@ export async function POST(request: NextRequest) {
       adminWallet: adminKeypair.publicKey.toBase58(),
     });
   } catch (error: any) {
-    console.error('❌ Error in admin-create-multisig API:', error);
+    console.error('❌ Error in admin-create-multi-sig API:', error);
     return NextResponse.json(
       { 
-        error: error.message || 'Failed to create multisig',
+        error: error.message || 'Failed to create multi-sig',
         details: error.toString(),
       },
       { status: 500 }

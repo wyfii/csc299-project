@@ -69,7 +69,7 @@ const ConfigurationPage = async () => {
       <div className="">
         <h1 className="text-2xl font-medium mb-6 text-white">Configuration</h1>
         <p className="text-sm text-slate-600">
-          Multisig not found at {multisigCookie}. Check the multisig address,
+          Multi-sig not found at {multisigCookie}. Check the multi-sig address,
           selected program ID, and RPC/cluster, then try again.
         </p>
       </div>
@@ -121,7 +121,7 @@ const ConfigurationPage = async () => {
         <Card className="mt-4 w-1/2 mr-2">
           <CardHeader>
             <CardTitle>Add Member</CardTitle>
-            <CardDescription>Add a member to the Multisig</CardDescription>
+            <CardDescription>Add a member to the Multi-sig</CardDescription>
           </CardHeader>
           <CardContent>
             <AddMemberInput

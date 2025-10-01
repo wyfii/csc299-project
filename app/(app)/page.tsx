@@ -1,11 +1,10 @@
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { cookies, headers } from "next/headers";
 import * as multisig from "nova-multisig-sdk";
-import { TokenList } from "@/components/TokenList";
 import { VaultDisplayer } from "@/components/VaultDisplayer";
 import EmptyMultisigState from "@/components/EmptyMultisigState";
 import MultisigAddressDisplay from "@/components/MultisigAddressDisplay";
-import { PortfolioValue } from "@/components/PortfolioValue";
+import { PortfolioWrapper } from "@/components/PortfolioWrapper";
 import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
 import { HARDCODED_RPC_URL, HARDCODED_RPC_HEADERS } from "@/lib/utils";
 
@@ -89,19 +88,11 @@ export default async function Home() {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      {/* Header - Balance */}
-      <PortfolioValue
+      <PortfolioWrapper
         solBalance={solBalance}
         tokens={tokensInWallet}
         rpcUrl={HARDCODED_RPC_URL}
         vaultAddress={multisigVault.toBase58()}
-      />
-
-      {/* Portfolio List */}
-      <TokenList
-        solBalance={solBalance}
-        tokens={tokensInWallet}
-        rpcUrl={HARDCODED_RPC_URL}
         multisigPda={multisigCookie}
         vaultIndex={vaultIndex}
         programId={programIdCookie!}

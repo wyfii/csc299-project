@@ -11,9 +11,10 @@ interface PortfolioValueProps {
   tokens: any;
   rpcUrl: string;
   vaultAddress: string;
+  onSolPriceChange?: (price: number) => void;
 }
 
-export function PortfolioValue({ solBalance, tokens, rpcUrl, vaultAddress }: PortfolioValueProps) {
+export function PortfolioValue({ solBalance, tokens, rpcUrl, vaultAddress, onSolPriceChange }: PortfolioValueProps) {
   const [solPrice, setSolPrice] = useState(0);
   const [totalUSD, setTotalUSD] = useState(0);
 
@@ -22,23 +23,33 @@ export function PortfolioValue({ solBalance, tokens, rpcUrl, vaultAddress }: Por
       try {
         const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
         const data = await response.json();
-        setSolPrice(data.solana.usd);
+        const price = data.solana.usd;
+        setSolPrice(price);
+        onSolPriceChange?.(price);
       } catch (error) {
-        setSolPrice(150);
+        const defaultPrice = 150;
+        setSolPrice(defaultPrice);
+        onSolPriceChange?.(defaultPrice);
       }
     };
 
     fetchSolPrice();
     const interval = setInterval(fetchSolPrice, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [onSolPriceChange]);
 
   useEffect(() => {
     if (solPrice > 0) {
       const solValue = (solBalance / LAMPORTS_PER_SOL) * solPrice;
-      setTotalUSD(solValue);
+      
+      // For now, we only calculate SOL value. Token prices would require additional API calls
+      // TODO: Add token price calculations from CoinGecko or Jupiter API
+      let tokenValue = 0;
+      
+      const totalValue = solValue + tokenValue;
+      setTotalUSD(totalValue);
     }
-  }, [solBalance, solPrice]);
+  }, [solBalance, solPrice, tokens]);
 
   const copyAddress = () => {
     navigator.clipboard.writeText(vaultAddress);

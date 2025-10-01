@@ -25,15 +25,15 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    // Only show onboarding for NEW users who haven't created a multisig
+    // Only show onboarding for NEW users who haven't created a multi-sig
     console.log("LandingPage state:", { connected, isLoading, isNewUser, showOnboarding });
     
     if (connected && !isLoading) {
       if (isNewUser === true) {
-        console.log("📋 New user (no multisig) - showing onboarding");
+        console.log("📋 New user (no multi-sig) - showing onboarding");
         setShowOnboarding(true);
       } else if (isNewUser === false) {
-        console.log("✅ Existing user (has multisig) - hiding onboarding");
+        console.log("✅ Existing user (has multi-sig) - hiding onboarding");
         setShowOnboarding(false);
       }
     }
@@ -46,7 +46,7 @@ export default function LandingPage() {
     // Wait a bit for Firestore to propagate and blockchain to confirm
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    // Refresh to show the new multisig
+    // Refresh to show the new multi-sig
     router.refresh();
     
     // Wait another moment then clear loading
@@ -56,7 +56,7 @@ export default function LandingPage() {
     }, 2000);
   };
 
-  // Show loading screen after multisig creation
+  // Show loading screen after multi-sig creation
   if (isCreatingMultisig) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">

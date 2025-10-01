@@ -267,7 +267,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         
         // NOW call admin API for real
         toast.loading("Creating your multi-sig...", { id: "create-multisig" });
-        // Calling admin API to create multisig
+        // Calling admin API to create multi-sig
         
         const adminResponse = await fetch('/api/admin-create-multisig', {
           method: 'POST',
@@ -406,7 +406,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
 
       // Save multisig in subcollection with all details
       const multisigRef = doc(db, "users", publicKey.toBase58(), "multisigs", multisigPda.toBase58());
-      console.log("💾 Saving multisig to subcollection:", multisigPda.toBase58());
+      console.log("💾 Saving multi-sig to subcollection:", multisigPda.toBase58());
       
       try {
         await setDoc(multisigRef, {
@@ -417,9 +417,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           createdBy: publicKey.toBase58(),
           isActive: true,
         });
-        console.log("✅ Multisig saved to subcollection!");
+        console.log("✅ Multi-sig saved to subcollection!");
       } catch (fbError: any) {
-        console.error("❌ Failed to save multisig to subcollection:", fbError.message);
+        console.error("❌ Failed to save multi-sig to subcollection:", fbError.message);
       }
 
       // Track successful multisig creation
@@ -433,7 +433,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       
         onComplete();
     } catch (error: any) {
-      console.error("Error creating multisig:", error);
+      console.error("Error creating multi-sig:", error);
       
       // Track error
       trackError('multisig_creation_failed', error.message, 'MultisigOnboarding');

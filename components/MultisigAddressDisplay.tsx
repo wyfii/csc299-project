@@ -24,7 +24,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
   };
 
   const resetMultisig = () => {
-    if (confirm("Reset to your wallet's multisig from Firestore?")) {
+    if (confirm("Reset to your wallet's multi-sig from Firestore?")) {
       document.cookie = 'x-multisig=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
       toast.success("Resetting to your multi-sig...", { duration: 2000 });
       setTimeout(() => location.reload(), 1000);
@@ -39,7 +39,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
           onClick={resetMultisig}
           className="text-xs text-orange-400 hover:text-orange-300 underline font-sans"
         >
-          Reset to my multisig
+          Reset to my multi-sig
         </button>
       </div>
       <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
           <AlertTriangle className="w-3 h-3 flex-shrink-0" />
           <span>
             Connected wallet: <span className="font-mono">{publicKey.toBase58().slice(0,4)}...{publicKey.toBase58().slice(-4)}</span>
-            {' '}• This is your vault address where funds are stored • If you see errors, click &quot;Reset to my multisig&quot; above
+            {' '}• This is your vault address where funds are stored • If you see errors, click &quot;Reset to my multi-sig&quot; above
           </span>
         </div>
       )}

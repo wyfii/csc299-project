@@ -47,16 +47,16 @@ export function useUserOnboarding() {
         const hasMultisigInFirestore = multisigsResponse.ok && 
           (await multisigsResponse.json()).documents?.length > 0;
         
-        console.log("useUserOnboarding: Has multisig in Firestore?", hasMultisigInFirestore);
+        console.log("useUserOnboarding: Has multi-sig in Firestore?", hasMultisigInFirestore);
 
         if (hasMultisigInFirestore) {
-          // User has multisig - don't show onboarding
-          console.log("useUserOnboarding: User HAS multisig - no onboarding needed");
+          // User has multi-sig - don't show onboarding
+          console.log("useUserOnboarding: User HAS multi-sig - no onboarding needed");
           setIsNewUser(false);
           localStorage.setItem(`nova-user-${walletAddress}`, "true");
         } else {
-          // User has NO multisig - show onboarding
-          console.log("useUserOnboarding: User has NO multisig - showing onboarding");
+          // User has NO multi-sig - show onboarding
+          console.log("useUserOnboarding: User has NO multi-sig - showing onboarding");
           setIsNewUser(true);
           localStorage.removeItem(`nova-user-${walletAddress}`);
         }
@@ -105,12 +105,12 @@ export function useUserOnboarding() {
       
       // Save to localStorage IMMEDIATELY for instant effect
       localStorage.setItem(`nova-user-${walletAddress}`, "true");
-      console.log("✅ Saved to localStorage - user marked as having multisig");
+      console.log("✅ Saved to localStorage - user marked as having multi-sig");
       
       // Also save to Firebase
       const userRef = doc(db, "users", walletAddress);
       await setDoc(userRef, { hasCreatedMultisig: true }, { merge: true });
-      console.log("✅ Saved to Firebase - user marked as having multisig");
+      console.log("✅ Saved to Firebase - user marked as having multi-sig");
       
       setIsNewUser(false);
     } catch (error) {

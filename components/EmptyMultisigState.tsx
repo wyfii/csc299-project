@@ -25,7 +25,7 @@ export default function EmptyMultisigState() {
               No Multisig Selected
             </CardTitle>
             <CardDescription className="text-gray-400 font-sans">
-              Get started by creating a new multisig or adding an existing one
+              Get started by creating a new multi-sig or adding an existing one
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 pt-6">
@@ -83,7 +83,7 @@ export default function EmptyMultisigState() {
 
             <div className="pt-4 text-center">
               <p className="text-xs text-gray-500 font-sans">
-                💡 Tip: You can switch between multisigs anytime from the settings page
+                💡 Tip: You can switch between multi-sigs anytime from the settings page
               </p>
             </div>
           </CardContent>

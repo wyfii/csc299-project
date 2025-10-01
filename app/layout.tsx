@@ -5,8 +5,8 @@ import "./globals.css";
 import { Wallet } from "@/components/Wallet";
 
 export const metadata: Metadata = {
-  title: "Nova - Multisig Wallet",
-  description: "Nova - Secure multisig wallet for Solana.",
+  title: "Nova - Multi-sig Wallet",
+  description: "Nova - Secure multi-sig wallet for Solana.",
   icons: {
     icon: [
       { url: '/logo.png', sizes: 'any' },

@@ -27,6 +27,7 @@ type TokenListProps = {
   multisigPda: string;
   vaultIndex: number;
   programId?: string;
+  solPrice?: number;
 };
 
 export function TokenList({
@@ -36,6 +37,7 @@ export function TokenList({
   multisigPda,
   vaultIndex,
   programId,
+  solPrice = 0,
 }: TokenListProps) {
   return (
     <div className="space-y-px">
@@ -46,7 +48,9 @@ export function TokenList({
           <span className="text-gray-500">•</span>
           <span className="text-white font-mono">{(solBalance / LAMPORTS_PER_SOL).toFixed(4)}</span>
           <span className="text-gray-500">•</span>
-          <span className="text-gray-500">$0.00</span>
+          <span className="text-gray-500">
+            ${((solBalance / LAMPORTS_PER_SOL) * solPrice).toFixed(2)}
+          </span>
         </div>
         <div className="flex gap-2">
           <SendSol
