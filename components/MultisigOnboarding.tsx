@@ -423,7 +423,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       content: (
         <div  className="space-y-6">
           <div  className="text-center space-y-4">
-            <p className="text-gray-300 font-sans text-lg">
+            <p className="text-gray-300 font-sans text-base md:text-lg">
               A <span className="text-orange-500 font-semibold">Multisig</span> is a multisig wallet that requires
               multiple approvals before executing transactions.
             </p>
@@ -595,9 +595,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       icon: Check,
       content: (
         <div  className="space-y-6">
-          <div  className="bg-zinc-800/50 rounded-lg p-6 space-y-4">
-            <h4 className="font-semibold text-white font-sans flex items-center">
-              <Users className="w-5 h-5 mr-2 text-orange-500" />
+          <div  className="bg-zinc-800/50 rounded-lg p-4 md:p-6 space-y-4">
+            <h4 className="font-semibold text-white font-sans flex items-center text-sm md:text-base">
+              <Users className="w-4 h-4 md:w-5 md:h-5 mr-2 text-orange-500" />
               Multisig Members ({Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length} total)
             </h4>
             <div className="space-y-2">
@@ -606,21 +606,21 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                 return (
                   <div
                     key={addr}
-                    className={`flex items-center justify-between p-3 rounded-lg ${
+                    className={`flex items-center justify-between p-2 md:p-3 rounded-lg ${
                       isCreator 
                         ? "bg-orange-500/10 border border-orange-500/20" 
                         : "bg-zinc-700/50"
                     }`}
                   >
-                    <span className="text-sm text-gray-300 font-mono">
-                      {addr?.slice(0, 8)}...{addr?.slice(-8)}
+                    <span className="text-xs md:text-sm text-gray-300 font-mono truncate mr-2">
+                      {addr?.slice(0, 4)}...{addr?.slice(-4)}
                     </span>
-                    <span className={`text-xs px-2 py-1 rounded font-sans font-semibold ${
+                    <span className={`text-xs px-2 py-1 rounded font-sans font-semibold whitespace-nowrap ${
                       isCreator 
                         ? "bg-orange-500 text-black" 
                         : "text-gray-400"
                     }`}>
-                      {isCreator ? "You (Creator)" : `Member ${index}`}
+                      {isCreator ? "You" : `#${index}`}
                     </span>
                   </div>
                 );
@@ -628,42 +628,42 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
           </div>
 
-          <div  className="bg-zinc-800/50 rounded-lg p-6">
-            <h4 className="font-semibold text-white font-sans flex items-center mb-2">
-              <Shield className="w-5 h-5 mr-2 text-orange-500" />
+          <div  className="bg-zinc-800/50 rounded-lg p-4 md:p-6">
+            <h4 className="font-semibold text-white font-sans flex items-center mb-2 text-sm md:text-base">
+              <Shield className="w-4 h-4 md:w-5 md:h-5 mr-2 text-orange-500" />
               Approval Threshold
             </h4>
-            <p className="text-gray-300 font-sans">
-              <span className="text-2xl font-bold text-orange-500">
+            <p className="text-gray-300 font-sans text-sm md:text-base">
+              <span className="text-xl md:text-2xl font-bold text-orange-500">
                 {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length} out of {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}
               </span>{" "}
-              approvals required to execute transactions
+              approvals required
             </p>
             <p className="text-xs text-gray-500 mt-2 font-sans">
               (All members must approve for maximum security)
             </p>
           </div>
 
-          <div  className="bg-zinc-800/50 rounded-lg p-6">
-            <h4 className="font-semibold text-white font-sans flex items-center mb-2">
-              <Coins className="w-5 h-5 mr-2 text-orange-500" />
+          <div  className="bg-zinc-800/50 rounded-lg p-4 md:p-6">
+            <h4 className="font-semibold text-white font-sans flex items-center mb-2 text-sm md:text-base">
+              <Coins className="w-4 h-4 md:w-5 md:h-5 mr-2 text-orange-500" />
               Payment Method
             </h4>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
               {useNVAIPayment ? (
                 <>
                   <div className="flex items-center gap-2">
-                    {getTokenImage("3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin", 24)}
-                    <span className="text-orange-400 font-bold">NVAI Burn</span>
+                    {getTokenImage("3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin", 20)}
+                    <span className="text-orange-400 font-bold text-sm md:text-base">NVAI Burn</span>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="flex items-center gap-2">
-                    {getTokenImage("SOL", 24)}
-                    <span className="text-white font-bold">SOL Payment</span>
+                    {getTokenImage("SOL", 20)}
+                    <span className="text-white font-bold text-sm md:text-base">SOL Payment</span>
                   </div>
-                  <span className="text-gray-400 text-xs">(You pay ~{MULTISIG_CREATION_COST_SOL} SOL)</span>
+                  <span className="text-gray-400 text-xs">(~{MULTISIG_CREATION_COST_SOL} SOL)</span>
                 </>
               )}
             </div>
@@ -687,15 +687,15 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
   return (
     <div>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 antialiased">
+        <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center overflow-y-auto antialiased">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/90 backdrop-blur-md"
+            className="fixed inset-0 bg-black/90 backdrop-blur-md"
           />
 
-          {/* Modal */}
+          {/* Modal - Mobile responsive */}
           <div
-            className="relative w-full max-w-3xl bg-zinc-900 border border-zinc-800 shadow-2xl overflow-hidden rounded-lg"
+            className="relative w-full max-w-3xl bg-zinc-900 border-0 md:border border-zinc-800 shadow-2xl overflow-hidden md:rounded-lg my-0 md:my-8 min-h-screen md:min-h-0"
           >
             {/* Progress Bar */}
             <div className="h-1 bg-zinc-800">
@@ -706,7 +706,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
 
             {/* Step Indicators */}
-            <div className="flex justify-center items-center space-x-2 px-8 pt-6">
+            <div className="flex justify-center items-center space-x-2 px-4 md:px-8 pt-4 md:pt-6">
               {steps.map((_, index) => (
                 <div
                   key={index}
@@ -721,49 +721,49 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
 
             {/* Content */}
-            <div className="p-8">
+            <div className="p-4 md:p-8 pb-6 md:pb-8">
               <div >
                 <div
                   key={step}
                   className="space-y-6"
                 >
                   {/* Icon & Title */}
-                  <div className="text-center space-y-3">
+                  <div className="text-center space-y-2 md:space-y-3">
                     <div
-                      className="inline-flex w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 items-center justify-center"
+                      className="inline-flex w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 items-center justify-center"
                     >
-                      <Icon className="w-8 h-8 text-black" />
+                      <Icon className="w-6 h-6 md:w-8 md:h-8 text-black" />
                     </div>
-                    <h2 className="text-3xl font-bold text-white font-sans">
+                    <h2 className="text-2xl md:text-3xl font-bold text-white font-sans">
                       {currentStepData.title}
                     </h2>
-                    <p className="text-gray-400 font-sans">{currentStepData.subtitle}</p>
+                    <p className="text-sm md:text-base text-gray-400 font-sans">{currentStepData.subtitle}</p>
                   </div>
 
                   {/* Step Content */}
                   <div className="py-4">{currentStepData.content}</div>
 
                   {/* Actions */}
-                  <div className="flex justify-between items-center pt-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-0 pt-4">
                     {step > 0 ? (
                       <Button
                         variant="ghost"
                         onClick={() => setStep(step - 1)}
                         disabled={isCreating}
-                        className="font-sans"
+                        className="font-sans w-full sm:w-auto"
                       >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back
                       </Button>
                     ) : (
-                      <div />
+                      <div className="hidden sm:block" />
                     )}
 
                     {step < steps.length - 1 ? (
                       <Button
                         onClick={() => setStep(step + 1)}
                         disabled={(step === 1 && !canProceedToCreation)}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-6 font-sans"
+                        className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-6 font-sans w-full sm:w-auto"
                       >
                         Continue
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -772,7 +772,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                       <Button
                         onClick={createMultisigWallet}
                         disabled={isCreating}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-8 font-sans"
+                        className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-8 font-sans w-full sm:w-auto"
                       >
                         {isCreating ? (
                           <>
