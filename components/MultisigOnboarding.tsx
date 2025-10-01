@@ -90,8 +90,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
     try {
       // Get RPC URL from env
       const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || HARDCODED_RPC_URL;
-      console.log("🔥 Using RPC URL:", rpcUrl);
-      console.log("💳 Payment method:", useNVAIPayment ? "NVAI Burn" : "SOL");
+      // Using RPC URL for connection
+      // Payment method selected
       
       const connection = new Connection(rpcUrl, {
         commitment: "confirmed",
@@ -162,7 +162,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         });
 
         console.log('✅ Multisig instruction prepared');
-        console.log('🧪 Testing admin API availability...');
+        // Testing admin API availability
         
         // Test admin API first (before burning NVAI)
         const testResponse = await fetch('/api/admin-create-multisig', {
@@ -189,7 +189,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           throw new Error(`Cannot create multisig: ${errorData.error || 'Admin API unavailable'}`);
         }
         
-        console.log('✅ Admin API is ready!');
+        // Admin API is ready
         console.log('🔥 Now burning NVAI (safe to proceed)...');
         
         // Import burn modules
@@ -234,7 +234,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         
         // NOW call admin API for real
         toast.loading("Admin creating your multisig...", { id: "create-multisig" });
-        console.log('📤 Calling admin API (for real)...');
+        // Calling admin API to create multisig
         
         const adminResponse = await fetch('/api/admin-create-multisig', {
           method: 'POST',
@@ -261,7 +261,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         }
 
         const { signature } = await adminResponse.json();
-        console.log("✅ Multisig created by admin! Signature:", signature);
+        // Multisig created by admin successfully
         
         const newMultisigAddress = multisigPda.toBase58();
         
@@ -352,10 +352,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         </div>,
         { id: "create-multisig", duration: 10000 }
       );
-      console.log("Check Firestore for:", publicKey.toBase58(), "/multisigs/", newMultisigAddress);
+      // Saving multisig to Firestore
 
       // Save to Firebase - Update user document
-      console.log("💾 Saving to Firebase for wallet:", publicKey.toBase58());
       const userRef = doc(db, "users", publicKey.toBase58());
       
       try {

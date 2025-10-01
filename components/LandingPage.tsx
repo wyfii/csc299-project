@@ -4,7 +4,6 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AnimatedBackground from "./AnimatedBackground";
 import { Button } from "./ui/button";
 import { Wallet } from "lucide-react";
 import MultisigOnboarding from "./MultisigOnboarding";
@@ -93,8 +92,9 @@ export default function LandingPage() {
   console.log("🌟 Not connected - showing landing page");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center antialiased">
-      <AnimatedBackground />
+    <div className="fixed inset-0 z-50 flex items-center justify-center antialiased bg-gradient-to-br from-black via-zinc-950 to-black">
+      {/* Simple gradient overlay - no animations */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:64px_64px] pointer-events-none" />
       
       {/* Centered Card */}
       <div className="relative z-10 w-full max-w-md mx-4 opacity-100">

@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log('🔐 Admin wallet signing transaction:', adminKeypair.publicKey.toBase58());
+    // Admin wallet signing transaction
 
     // Deserialize transaction
     const tx = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'));

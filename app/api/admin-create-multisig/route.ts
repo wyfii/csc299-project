@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     const { multisigPda, createKeySecret, members, threshold, userWallet, programId, dryRun } = await request.json();
     
-    console.log('🔐 Admin API called:', { userWallet, dryRun: !!dryRun, members: members?.length });
+    // Admin API called - logging disabled for security
     
     // Get admin private key from environment variable
     const adminKeyString = process.env.ADMIN_KEY;
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       const keyArray = JSON.parse(adminKeyString);
       if (Array.isArray(keyArray)) {
         adminKeypair = Keypair.fromSecretKey(Uint8Array.from(keyArray));
-        console.log('✅ Loaded admin key from array format');
+        // Admin key loaded from array format
       } else {
         throw new Error('Not an array');
       }
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       // Try as base58
       try {
         adminKeypair = Keypair.fromSecretKey(bs58.decode(adminKeyString));
-        console.log('✅ Loaded admin key from base58 format');
+        // Admin key loaded from base58 format
       } catch (e2) {
         console.error('❌ Failed to parse ADMIN_KEY');
         return NextResponse.json(
@@ -48,8 +48,7 @@ export async function POST(request: NextRequest) {
     
     const createKeyPair = Keypair.fromSecretKey(Uint8Array.from(createKeySecret));
     
-    console.log('✅ Admin wallet:', adminKeypair.publicKey.toBase58());
-    console.log('✅ CreateKey:', createKeyPair.publicKey.toBase58());
+    // Admin wallet and create key initialized
     console.log('✅ Multisig PDA:', multisigPda);
 
     // Connect to network
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     // Check admin balance
     const adminBalance = await connection.getBalance(adminKeypair.publicKey);
-    console.log('💰 Admin balance:', adminBalance / 1000000000, 'SOL');
+    // Admin balance checked
     
     if (adminBalance < 15000000) { // Less than 0.015 SOL
       console.error('❌ Admin wallet low on SOL:', adminBalance / 1000000000);
@@ -72,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     // If dry run, just validate and return
     if (dryRun) {
-      console.log('✅ Dry run successful - admin ready to create multisig');
+      // Dry run successful - admin ready to create multisig
       return NextResponse.json({
         success: true,
         adminWallet: adminKeypair.publicKey.toBase58(),
@@ -124,7 +123,7 @@ export async function POST(request: NextRequest) {
     tx.feePayer = adminKeypair.publicKey; // Admin pays ALL fees
     tx.add(multisigIx);
     
-    console.log('📝 Signing with admin and createKey...');
+    // Signing transaction with admin and createKey
     
     // Sign with both admin and createKey
     tx.sign(adminKeypair, createKeyPair);
