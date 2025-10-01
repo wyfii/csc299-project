@@ -5,6 +5,7 @@ import { TokenList } from "@/components/TokenList";
 import { VaultDisplayer } from "@/components/VaultDisplayer";
 import EmptyMultisigState from "@/components/EmptyMultisigState";
 import MultisigAddressDisplay from "@/components/MultisigAddressDisplay";
+import { PortfolioValue } from "@/components/PortfolioValue";
 import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
 import { HARDCODED_RPC_URL, HARDCODED_RPC_HEADERS } from "@/lib/utils";
 
@@ -83,6 +84,12 @@ export default async function Home() {
     <main className="">
       <div>
         <h1 className="text-2xl font-medium mb-6 text-white">Vault</h1>
+        
+        <PortfolioValue
+          solBalance={solBalance}
+          tokens={tokensInWallet}
+          rpcUrl={HARDCODED_RPC_URL}
+        />
         
         <MultisigAddressDisplay multisigAddress={multisigCookie} />
 
