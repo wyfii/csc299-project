@@ -38,22 +38,17 @@ export function TokenList({
   programId,
 }: TokenListProps) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-px">
       {/* SOL Row */}
-      <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4 flex items-center justify-between hover:border-zinc-800 transition-colors">
-        <div className="flex-1">
-          <div className="flex items-baseline gap-3">
-            <span className="text-white font-medium text-base">SOL</span>
-            <span className="text-gray-500 text-xs">Solana</span>
-          </div>
-          <p className="text-gray-400 text-sm mt-1 font-mono">
-            {(solBalance / LAMPORTS_PER_SOL).toFixed(4)}
-          </p>
+      <div className="bg-zinc-950/50 border-b border-zinc-900 px-4 py-3 flex items-center justify-between hover:bg-zinc-950 transition-colors">
+        <div className="flex items-center gap-4 flex-1">
+          <span className="text-white font-medium">SOL</span>
+          <span className="text-gray-500">•</span>
+          <span className="text-white font-mono">{(solBalance / LAMPORTS_PER_SOL).toFixed(4)}</span>
+          <span className="text-gray-500">•</span>
+          <span className="text-gray-500">$0.00</span>
         </div>
         <div className="flex gap-2">
-          <button className="bg-white text-black hover:bg-gray-200 rounded-full px-4 py-1.5 text-xs font-medium transition-colors">
-            DEPOSIT
-          </button>
           <SendSol
             rpcUrl={rpcUrl}
             multisigPda={multisigPda}
@@ -67,26 +62,21 @@ export function TokenList({
       {tokens.value.map((token) => {
         const mintAddress = token.account.data.parsed.info.mint;
         const amount = token.account.data.parsed.info.tokenAmount.uiAmount;
-        const shortMint = `${mintAddress.slice(0, 4)}...${mintAddress.slice(-4)}`;
+        const symbol = mintAddress.slice(0, 6);
         
         return (
           <div 
             key={mintAddress}
-            className="bg-zinc-950 border border-zinc-900 rounded-lg p-4 flex items-center justify-between hover:border-zinc-800 transition-colors"
+            className="bg-zinc-950/50 border-b border-zinc-900 px-4 py-3 flex items-center justify-between hover:bg-zinc-950 transition-colors"
           >
-            <div className="flex-1">
-              <div className="flex items-baseline gap-3">
-                <span className="text-white font-medium text-base font-mono">{shortMint}</span>
-                <span className="text-gray-500 text-xs">Token</span>
-              </div>
-              <p className="text-gray-400 text-sm mt-1 font-mono">
-                {amount?.toFixed(4) || '0.0000'}
-              </p>
+            <div className="flex items-center gap-4 flex-1">
+              <span className="text-white font-medium font-mono">{symbol}</span>
+              <span className="text-gray-500">•</span>
+              <span className="text-white font-mono">{amount?.toFixed(4) || '0.0000'}</span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-500">$0.00</span>
             </div>
             <div className="flex gap-2">
-              <button className="bg-white text-black hover:bg-gray-200 rounded-full px-4 py-1.5 text-xs font-medium transition-colors">
-                DEPOSIT
-              </button>
               <SendTokens
                 mint={mintAddress}
                 tokenAccount={token.pubkey.toBase58()}

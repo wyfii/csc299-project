@@ -88,31 +88,24 @@ export default async function Home() {
   }
 
   return (
-    <main className="p-6 max-w-4xl">
-      <div>
-        <PortfolioValue
-          solBalance={solBalance}
-          tokens={tokensInWallet}
-          rpcUrl={HARDCODED_RPC_URL}
-        />
-        
-        <MultisigAddressDisplay multisigAddress={multisigCookie} />
+    <main className="p-6 max-w-3xl mx-auto">
+      {/* Header - Balance */}
+      <PortfolioValue
+        solBalance={solBalance}
+        tokens={tokensInWallet}
+        rpcUrl={HARDCODED_RPC_URL}
+        vaultAddress={multisigVault.toBase58()}
+      />
 
-        <TokenList
-          solBalance={solBalance}
-          tokens={tokensInWallet}
-          rpcUrl={HARDCODED_RPC_URL}
-          multisigPda={multisigCookie}
-          vaultIndex={vaultIndex}
-          programId={programIdCookie!}
-        />
-
-        <VaultDisplayer
-          multisigPdaString={multisigCookie}
-          vaultIndex={vaultIndex}
-          programId={programIdCookie}
-        />
-      </div>
+      {/* Portfolio List */}
+      <TokenList
+        solBalance={solBalance}
+        tokens={tokensInWallet}
+        rpcUrl={HARDCODED_RPC_URL}
+        multisigPda={multisigCookie}
+        vaultIndex={vaultIndex}
+        programId={programIdCookie!}
+      />
     </main>
   );
 }
