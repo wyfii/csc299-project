@@ -6,6 +6,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, TransactionMessage, VersionedTransaction } from "@solana/web3.js";
 import * as multisig from "nova-multisig-sdk";
 import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from "@/lib/utils";
+import { trackTransactionApproved, trackUserAction, trackError } from "@/lib/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Clock, Wallet, ArrowRight, Users, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -220,6 +221,13 @@ export default function MultiSigApprovalModal({
       if (confirmation.value.err) {
         throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
       }
+
+      // Track successful approval
+      trackTransactionApproved('multisig_approval');
+      trackUserAction('transaction_approved', { 
+        transactionIndex, 
+        multisigAddress: multisigPda 
+      });
 
       // Show success with clickable Solscan link
       toast.success(

@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { Wallet } from "lucide-react";
 import MultisigOnboarding from "./MultisigOnboarding";
 import { useUserOnboarding } from "@/lib/hooks/useUserOnboarding";
+import { trackPageView, trackUserAction } from "@/lib/analytics";
 
 export default function LandingPage() {
   const { connected } = useWallet();
@@ -17,6 +18,11 @@ export default function LandingPage() {
   const { isNewUser, isLoading } = useUserOnboarding();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isCreatingMultisig, setIsCreatingMultisig] = useState(false);
+
+  useEffect(() => {
+    // Track page view
+    trackPageView('landing_page');
+  }, []);
 
   useEffect(() => {
     // Only show onboarding for NEW users who haven't created a multisig

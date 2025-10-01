@@ -20,6 +20,7 @@ import { DialogTrigger } from './ui/dialog';
 import { DialogContent, DialogTitle } from './ui/dialog';
 import { useState } from 'react';
 import { range, HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from '@/lib/utils';
+import { trackTransactionExecuted, trackUserAction, trackError } from '@/lib/analytics';
 
 type WithALT = {
   instruction: TransactionInstruction;
@@ -253,6 +254,14 @@ const ExecuteButton = ({
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       
+      // Track successful execution
+      trackTransactionExecuted('multisig_execution', true);
+      trackUserAction('transaction_executed', { 
+        transactionIndex, 
+        multisigAddress: multisigPda,
+        success: true
+      });
+
       // Show success with clickable Solscan link
       toast.success(
         <div className="flex flex-col gap-1">
@@ -276,6 +285,15 @@ const ExecuteButton = ({
         logs: error.logs,
         code: error.code,
         data: error.data,
+      });
+
+      // Track execution error
+      trackTransactionExecuted('multisig_execution', false);
+      trackError('transaction_execution_failed', error.message, 'ExecuteButton');
+      trackUserAction('transaction_execution_error', { 
+        transactionIndex, 
+        multisigAddress: multisigPda,
+        error: error.message
       });
       
       // Parse error message from simulation logs

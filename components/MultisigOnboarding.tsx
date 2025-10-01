@@ -14,6 +14,7 @@ import * as multisig from "nova-multisig-sdk";
 import NVAIBurnOption from "./NVAIBurnOption";
 import { getTokenImage } from "@/lib/getTokenImage";
 import { MULTISIG_CREATION_COST_SOL, getNVAIPriceInSOL, calculateNVAIToBurn } from "@/lib/getNVAIPrice";
+import { trackMultisigCreated, trackUserAction, trackError } from "@/lib/analytics";
 
 interface MultisigOnboardingProps {
   isOpen: boolean;
@@ -298,6 +299,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
 
         localStorage.setItem(`nova-user-${publicKey.toBase58()}`, "true");
         
+        // Track successful multisig creation
+        trackMultisigCreated('NVAI', members.length);
+        trackUserAction('multisig_creation_success', { method: 'NVAI', memberCount: members.length });
+        
         toast.success("✅ Multisig created with NVAI burn!", { id: "create-multisig", duration: 3000 });
         
         // Wait a moment for everything to propagate
@@ -385,6 +390,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         console.error("❌ Failed to save multisig to subcollection:", fbError.message);
       }
 
+      // Track successful multisig creation
+      trackMultisigCreated('SOL', members.length);
+      trackUserAction('multisig_creation_success', { method: 'SOL', memberCount: members.length });
+
       toast.success("Multisig created successfully! 🎉", { id: "create-multisig" });
 
       // Wait for everything to propagate before completing
@@ -393,6 +402,15 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         onComplete();
     } catch (error: any) {
       console.error("Error creating multisig:", error);
+      
+      // Track error
+      trackError('multisig_creation_failed', error.message, 'MultisigOnboarding');
+      trackUserAction('multisig_creation_error', { 
+        error: error.message, 
+        method: useNVAIPayment ? 'NVAI' : 'SOL',
+        memberCount: members.length 
+      });
+      
       toast.error(`Failed to create Multisig: ${error.message}`, { id: "create-multisig" });
       setIsCreating(false);
     }

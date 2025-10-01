@@ -8,6 +8,7 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import { HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from "@/lib/utils";
+import { trackTransactionApproved, trackUserAction } from "@/lib/analytics";
 import { Button } from "./ui/button";
 import * as multisig from "nova-multisig-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
