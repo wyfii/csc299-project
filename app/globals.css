@@ -53,7 +53,8 @@
   }
   
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #000000;
     font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 16px;
     line-height: 1.5;

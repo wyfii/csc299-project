@@ -63,7 +63,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           className="hidden md:block md:left-0 md:top-0 md:w-64 z-40 h-auto md:h-screen md:fixed"
           aria-label="Sidebar"
         >
-          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between md:border-r border-zinc-800 px-4 py-6 bg-black/90 backdrop-blur-sm">
+          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between md:border-r border-zinc-900 px-4 py-6 bg-zinc-950 md:m-4 md:mr-0 md:rounded-lg">
             <div>
               <Link href="/">
                 <div className="mb-10 flex items-center gap-3 px-3 py-2 text-white hover:opacity-80 transition-opacity">
@@ -84,11 +84,11 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                   <li key={tab.route}>
                     <a
                       href={tab.route}
-                      className={`flex items-center px-4 py-3 text-white transition-all ${
+                      className={`flex items-center px-4 py-3 text-white transition-all font-mono text-sm ${
                         (path!.startsWith(`${tab.route}/`) && tab.route != "/") ||
                         tab.route === path
-                          ? "bg-zinc-800 border-l-2 border-orange-500"
-                          : "hover:bg-zinc-900 opacity-70 hover:opacity-100"
+                          ? "bg-black border-l-2 border-orange-500"
+                          : "hover:bg-zinc-900 opacity-60 hover:opacity-100"
                       }`}
                     >
                       {tab.icon}

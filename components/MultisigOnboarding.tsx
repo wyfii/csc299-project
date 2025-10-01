@@ -15,6 +15,7 @@ import NVAIBurnOption from "./NVAIBurnOption";
 import { getTokenImage } from "@/lib/getTokenImage";
 import { MULTISIG_CREATION_COST_SOL, getNVAIPriceInSOL, calculateNVAIToBurn } from "@/lib/getNVAIPrice";
 import { trackMultisigCreated, trackUserAction, trackError } from "@/lib/analytics";
+import Image from "next/image";
 
 interface MultisigOnboardingProps {
   isOpen: boolean;
@@ -417,64 +418,32 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
 
   const steps = [
     {
-      title: "Welcome to Nova",
-      subtitle: "Let's create your first Multisig",
-      icon: Sparkles,
+      title: "Create Multisig",
+      subtitle: "Add members to your wallet",
+      icon: Users,
       content: (
-        <div  className="space-y-6">
-          <div  className="text-center space-y-4">
-            <p className="text-gray-300 font-sans text-base md:text-lg">
-              A <span className="text-orange-500 font-semibold">Multisig</span> is a multisig wallet that requires
-              multiple approvals before executing transactions.
+        <div className="flex flex-col items-center justify-center py-8 space-y-8">
+          <Image
+            src="/logo.png"
+            alt="Nova"
+            width={96}
+            height={96}
+            className="w-20 h-20 md:w-24 md:h-24"
+          />
+          <div className="text-center space-y-2">
+            <p className="text-gray-400 text-sm">
+              Multi-signature wallet for shared control
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div
-                className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700"
-              >
-                <Shield className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                <h4 className="font-semibold text-white mb-1 font-sans">Enhanced Security</h4>
-                <p className="text-sm text-gray-400 font-sans">
-                  No single person can move funds alone
-                </p>
-              </div>
-              <div
-                className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700"
-              >
-                <Users className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                <h4 className="font-semibold text-white mb-1 font-sans">Shared Control</h4>
-                <p className="text-sm text-gray-400 font-sans">
-                  Perfect for teams and organizations
-                </p>
-              </div>
-              <div
-                className="p-4 bg-zinc-800/50 rounded-lg border border-zinc-700"
-              >
-                <Check className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                <h4 className="font-semibold text-white mb-1 font-sans">Transparency</h4>
-                <p className="text-sm text-gray-400 font-sans">
-                  All members see proposed transactions
-                </p>
-              </div>
-            </div>
           </div>
-        </div>
+            </div>
       ),
     },
     {
-      title: "Add Team Members",
-      subtitle: `Add up to 3 team members (${members.length}/3)`,
+      title: "Members",
+      subtitle: `${members.length} of 3 members`,
       icon: Users,
       content: (
-        <div  className="space-y-6">
-          <div  className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-            <div className="flex items-start space-x-3">
-              <AlertCircle className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-blue-200 font-sans">
-                <p className="font-semibold mb-1">Add Multisig Members:</p>
-                <p>Add 1-3 wallet addresses (you can include your own wallet). You&apos;ll be automatically included if not added. Approval threshold will be calculated based on total members.</p>
-              </div>
-            </div>
-          </div>
+        <div className="space-y-4">
 
           {members.map((member, index) => (
             <div
@@ -482,9 +451,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
               className="space-y-2"
             >
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-300 font-sans flex items-center">
-                  <Wallet className="w-4 h-4 mr-2 text-orange-500" />
-                  Member {index + 1} Wallet Address
+                <label className="text-sm font-medium text-gray-400 font-mono">
+                  Member {index + 1}
                 </label>
                 {members.length > 1 && (
                   <Button
@@ -500,12 +468,12 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
               <Input
                 value={member.address}
                 onChange={(e) => handleMemberChange(index, e.target.value)}
-                placeholder="Enter Solana wallet address"
-                className={`font-mono text-sm ${
+                placeholder="Wallet address"
+                className={`font-mono text-xs bg-black border-zinc-800 ${
                   member.address && !member.isValid
-                    ? "border-red-500 focus-visible:ring-red-500"
+                    ? "border-red-500/50 focus-visible:ring-red-500/50"
                     : member.isValid
-                    ? "border-green-500 focus-visible:ring-green-500"
+                    ? "border-orange-500/50 focus-visible:ring-orange-500/50"
                     : ""
                 }`}
               />
@@ -518,33 +486,31 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
               )}
               {member.isValid && (
                 <p
-                  className="text-xs text-green-400 font-sans flex items-center"
+                  className="text-xs text-orange-400 font-mono flex items-center"
                 >
                   <Check className="w-3 h-3 mr-1" />
-                  Valid address
+                  Valid
                 </p>
               )}
             </div>
           ))}
 
           {members.length < 3 && (
-            <div >
               <Button
                 onClick={addMember}
                 variant="outline"
-                className="w-full border-dashed border-zinc-600 hover:border-orange-500 hover:bg-orange-500/5 font-sans"
+              className="w-full border-dashed border-zinc-800 hover:border-orange-500/50 hover:bg-black font-mono text-xs"
               >
                 <PlusCircleIcon className="w-4 h-4 mr-2" />
-                Add Another Member ({members.length}/3)
+              Add member
               </Button>
-            </div>
           )}
         </div>
       ),
     },
     {
-      title: "Choose Payment Method",
-      subtitle: "How would you like to pay for multisig creation?",
+      title: "Payment",
+      subtitle: "Select payment method",
       icon: Coins,
       content: (
         <div  className="space-y-6">
@@ -590,8 +556,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       ),
     },
     {
-      title: "Review & Create",
-      subtitle: "Everything looks good!",
+      title: "Confirm",
+      subtitle: "Review and create",
       icon: Check,
       content: (
         <div  className="space-y-6">
@@ -687,37 +653,17 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
   return (
     <div>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center overflow-y-auto antialiased">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/90 backdrop-blur-md"
-          />
-
+        <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center overflow-y-auto antialiased bg-black">
           {/* Modal - Mobile responsive */}
           <div
-            className="relative w-full max-w-3xl bg-zinc-900 border-0 md:border border-zinc-800 shadow-2xl overflow-hidden md:rounded-lg my-0 md:my-8 min-h-screen md:min-h-0"
+            className="relative w-full max-w-2xl bg-black border-0 md:border border-zinc-900 overflow-hidden md:rounded-none my-0 md:my-8 min-h-screen md:min-h-0"
           >
             {/* Progress Bar */}
-            <div className="h-1 bg-zinc-800">
+            <div className="h-px bg-zinc-900">
               <div
-                className="h-full bg-gradient-to-r from-orange-500 to-orange-600"
+                className="h-full bg-orange-500"
                 style={{ width: `${((step + 1) / steps.length) * 100}%` }}
               />
-            </div>
-
-            {/* Step Indicators */}
-            <div className="flex justify-center items-center space-x-2 px-4 md:px-8 pt-4 md:pt-6">
-              {steps.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-2 rounded-full transition-all ${
-                    index <= step ? "bg-orange-500 w-8" : "bg-zinc-700 w-2"
-                  }`}
-                  style={{
-                    width: index <= step ? 32 : 8,
-                  }}
-                />
-              ))}
             </div>
 
             {/* Content */}
@@ -728,16 +674,11 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   className="space-y-6"
                 >
                   {/* Icon & Title */}
-                  <div className="text-center space-y-2 md:space-y-3">
-                    <div
-                      className="inline-flex w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 items-center justify-center"
-                    >
-                      <Icon className="w-6 h-6 md:w-8 md:h-8 text-black" />
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white font-sans">
+                  <div className="text-center space-y-1">
+                    <h2 className="text-xl md:text-2xl font-medium text-white font-mono">
                       {currentStepData.title}
                     </h2>
-                    <p className="text-sm md:text-base text-gray-400 font-sans">{currentStepData.subtitle}</p>
+                    <p className="text-xs md:text-sm text-gray-600 font-mono">{currentStepData.subtitle}</p>
                   </div>
 
                   {/* Step Content */}
@@ -750,7 +691,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                         variant="ghost"
                         onClick={() => setStep(step - 1)}
                         disabled={isCreating}
-                        className="font-sans w-full sm:w-auto"
+                        className="font-mono text-xs w-full sm:w-auto border border-zinc-900 hover:bg-zinc-950"
                       >
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back
@@ -763,7 +704,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                       <Button
                         onClick={() => setStep(step + 1)}
                         disabled={(step === 1 && !canProceedToCreation)}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-6 font-sans w-full sm:w-auto"
+                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-6 w-full sm:w-auto"
                       >
                         Continue
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -772,17 +713,16 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                       <Button
                         onClick={createMultisigWallet}
                         disabled={isCreating}
-                        className="bg-orange-500 hover:bg-orange-600 text-black font-semibold px-8 font-sans w-full sm:w-auto"
+                        className="bg-orange-500 hover:bg-orange-600 text-black font-mono text-xs px-8 w-full sm:w-auto"
                       >
                         {isCreating ? (
                           <>
-                            <div className="w-4 h-4 bg-black rounded-full mr-2 animate-pulse" />
+                            <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
                             Creating...
                           </>
                         ) : (
                           <>
-                            Create Multisig
-                            <Sparkles className="w-4 h-4 ml-2" />
+                            Create
                           </>
                         )}
                       </Button>
