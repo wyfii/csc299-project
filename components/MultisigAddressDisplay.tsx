@@ -2,6 +2,8 @@
 import { toast } from "sonner";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { AlertTriangle } from "lucide-react";
+import { PublicKey } from "@solana/web3.js";
+import * as multisig from "nova-multisig-sdk";
 
 interface MultisigAddressDisplayProps {
   multisigAddress: string;
@@ -10,9 +12,15 @@ interface MultisigAddressDisplayProps {
 export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddressDisplayProps) {
   const { publicKey } = useWallet();
   
+  // Calculate vault address from multisig address
+  const [vaultAddress] = multisig.getVaultPda({
+    multisigPda: new PublicKey(multisigAddress),
+    index: 0, // Assuming vault index 0
+  });
+  
   const copyAddress = () => {
-    navigator.clipboard.writeText(multisigAddress);
-    toast.success("Multisig address copied!");
+    navigator.clipboard.writeText(vaultAddress.toBase58());
+    toast.success("Vault address copied!");
   };
 
   const resetMultisig = () => {
@@ -26,7 +34,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
   return (
     <div className="mb-4 p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs text-gray-400 font-sans">Your Multisig Address:</p>
+        <p className="text-xs text-gray-400 font-sans">Your Vault Address:</p>
         <button
           onClick={resetMultisig}
           className="text-xs text-orange-400 hover:text-orange-300 underline font-sans"
@@ -36,7 +44,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
       </div>
       <div className="flex items-center gap-2">
         <p className="font-mono text-sm text-orange-500 font-semibold break-all">
-          {multisigAddress}
+          {vaultAddress.toBase58()}
         </p>
         <button
           onClick={copyAddress}
@@ -50,7 +58,7 @@ export default function MultisigAddressDisplay({ multisigAddress }: MultisigAddr
           <AlertTriangle className="w-3 h-3 flex-shrink-0" />
           <span>
             Connected wallet: <span className="font-mono">{publicKey.toBase58().slice(0,4)}...{publicKey.toBase58().slice(-4)}</span>
-            {' '}• If you see errors, click &quot;Reset to my multisig&quot; above
+            {' '}• This is your vault address where funds are stored • If you see errors, click &quot;Reset to my multisig&quot; above
           </span>
         </div>
       )}
