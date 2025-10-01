@@ -2,7 +2,7 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Users, Shield, Check, ArrowRight, ArrowLeft, Sparkles, Wallet, AlertCircle, PlusCircle as PlusCircleIcon, X as XIcon, Coins } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, Keypair, PublicKey, clusterApiUrl, Transaction } from "@solana/web3.js";
 import { createMultisig, Member } from "@/lib/createSquad";
@@ -38,6 +38,15 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
   ]);
   const [isCreating, setIsCreating] = useState(false);
   const [useNVAIPayment, setUseNVAIPayment] = useState(false);
+  const [userBalance, setUserBalance] = useState<number>(0);
+  const [balanceChecked, setBalanceChecked] = useState(false);
+
+  // Check balance when payment step (step 1) is reached
+  useEffect(() => {
+    if (step === 1 && publicKey && !balanceChecked) {
+      checkUserBalance();
+    }
+  }, [step, publicKey]);
 
   const validateAddress = (address: string, currentIndex: number): { isValid: boolean; error?: string } => {
     if (!address.trim()) {
@@ -84,8 +93,31 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
     }
   };
 
+  // Check user's SOL balance when payment step is reached
+  const checkUserBalance = async () => {
+    if (!publicKey || balanceChecked) return;
+    
+    try {
+      const connection = new Connection(HARDCODED_RPC_URL, { commitment: "confirmed" } as any);
+      const balance = await connection.getBalance(publicKey);
+      setUserBalance(balance / 1_000_000_000); // Convert lamports to SOL
+      setBalanceChecked(true);
+    } catch (error) {
+      console.error("Failed to check balance:", error);
+    }
+  };
+
   const createMultisigWallet = async () => {
     if (!publicKey || !canProceedToCreation) return;
+
+    // Check if user has enough SOL (only if not using NVAI payment)
+    if (!useNVAIPayment && userBalance < MULTISIG_CREATION_COST_SOL) {
+      toast.error(
+        `Insufficient SOL. You need ${MULTISIG_CREATION_COST_SOL} SOL but only have ${userBalance.toFixed(4)} SOL. Please add more SOL to your wallet or use NVAI payment.`,
+        { duration: 8000 }
+      );
+      return;
+    }
 
     setIsCreating(true);
     try {
@@ -505,8 +537,23 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       subtitle: "Select payment method",
       icon: Coins,
       content: (
-        <div  className="space-y-6">
-          <div  className="space-y-4">
+        <div className="space-y-6" onLoad={() => checkUserBalance()}>
+          {/* Balance warning if insufficient SOL */}
+          {balanceChecked && userBalance < MULTISIG_CREATION_COST_SOL && !useNVAIPayment && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-red-300 font-medium">Insufficient SOL Balance</p>
+                  <p className="text-xs text-red-400 mt-1">
+                    You have {userBalance.toFixed(4)} SOL but need {MULTISIG_CREATION_COST_SOL} SOL. Please add more SOL or use NVAI payment.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-4">
             {/* Standard SOL Payment */}
             <div
               className={`
@@ -516,7 +563,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   : 'bg-zinc-800/30 border-zinc-700 hover:border-zinc-600'
                 }
               `}
-              onClick={() => setUseNVAIPayment(false)}
+              onClick={() => {
+                setUseNVAIPayment(false);
+                checkUserBalance();
+              }}
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12">
@@ -528,6 +578,11 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   <p className="text-sm text-white mt-2">
                     Cost: <span className="font-bold text-orange-400">~{MULTISIG_CREATION_COST_SOL} SOL</span>
                   </p>
+                  {balanceChecked && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Your balance: {userBalance.toFixed(4)} SOL
+                    </p>
+                  )}
                 </div>
                 {!useNVAIPayment && (
                   <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
@@ -540,7 +595,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             {/* NVAI Burn Option */}
             <NVAIBurnOption
               selected={useNVAIPayment}
-              onSelect={(use) => setUseNVAIPayment(use)}
+              onSelect={(use) => {
+                setUseNVAIPayment(use);
+                checkUserBalance();
+              }}
             />
           </div>
 
