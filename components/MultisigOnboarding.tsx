@@ -32,12 +32,12 @@ interface MemberData {
 
 export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboardingProps) {
   const [step, setStep] = useState(0);
+  const { publicKey, sendTransaction } = useWallet();
   const [members, setMembers] = useState<MemberData[]>([
-    { address: "", isValid: false },
+    { address: publicKey?.toBase58() || "", isValid: !!publicKey },
   ]);
   const [isCreating, setIsCreating] = useState(false);
   const [useNVAIPayment, setUseNVAIPayment] = useState(false);
-  const { publicKey, sendTransaction } = useWallet();
 
   const validateAddress = (address: string, currentIndex: number): { isValid: boolean; error?: string } => {
     if (!address.trim()) {
@@ -441,9 +441,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             >
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-gray-400 font-mono">
-                  Member {index + 1}
+                  {index === 0 && member.address === publicKey?.toBase58() ? "You" : `Member ${index + 1}`}
                 </label>
-                {members.length > 1 && (
+                {members.length > 1 && index !== 0 && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -457,8 +457,11 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
               <Input
                 value={member.address}
                 onChange={(e) => handleMemberChange(index, e.target.value)}
-                placeholder="Wallet address"
+                placeholder={index === 0 ? "Your wallet (creator)" : "Wallet address"}
+                disabled={index === 0 && member.address === publicKey?.toBase58()}
                 className={`font-mono text-xs bg-black border-zinc-800 ${
+                  index === 0 && member.address === publicKey?.toBase58() ? "opacity-75" : ""
+                } ${
                   member.address && !member.isValid
                     ? "border-red-500/50 focus-visible:ring-red-500/50"
                     : member.isValid
@@ -478,7 +481,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   className="text-xs text-orange-400 font-mono flex items-center"
                 >
                   <Check className="w-3 h-3 mr-1" />
-                  Valid
+                  {index === 0 && member.address === publicKey?.toBase58() ? "You (creator)" : "Valid"}
                 </p>
               )}
             </div>
