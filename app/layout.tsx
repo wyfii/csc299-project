@@ -5,20 +5,21 @@ import "./globals.css";
 import { Wallet } from "@/components/Wallet";
 
 export const metadata: Metadata = {
-  title: "Nova - Multi-sig Wallet",
-  description: "Nova - Secure multi-sig wallet for Solana.",
+  title: "Nova Vault",
+  description: "Secure multisig wallet for Solana. Built for the trenches.",
   icons: {
     icon: [
-      { url: '/logo.png', sizes: 'any' },
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/logo.png',
+    shortcut: '/favicon.ico',
   },
   manifest: '/site.webmanifest',
+  themeColor: '#ff6b00',
 };
 
 export default function RootLayout({

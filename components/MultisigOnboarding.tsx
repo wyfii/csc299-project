@@ -473,18 +473,22 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
               className="space-y-2"
             >
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-400 font-mono">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                   {index === 0 && member.address === publicKey?.toBase58() ? "You" : `Member ${index + 1}`}
                 </label>
                 {members.length > 1 && index !== 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  <button
                     onClick={() => removeMember(index)}
-                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 px-2"
+                    className="
+                      px-2 py-1
+                      bg-transparent border border-gray-800
+                      text-gray-400 hover:text-red-400 hover:border-red-500/50
+                      transition-all duration-200
+                    "
+                    style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
                   >
-                    <XIcon className="w-4 h-4" />
-                  </Button>
+                    <XIcon className="w-3 h-3" />
+                  </button>
                 )}
               </div>
               <Input
@@ -492,27 +496,23 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                 onChange={(e) => handleMemberChange(index, e.target.value)}
                 placeholder={index === 0 ? "Your wallet (creator)" : "Wallet address"}
                 disabled={index === 0 && member.address === publicKey?.toBase58()}
-                className={`font-mono text-xs bg-black border-zinc-800 ${
+                className={`font-mono text-xs bg-gray-900 border-gray-800 ${
                   index === 0 && member.address === publicKey?.toBase58() ? "opacity-75" : ""
                 } ${
                   member.address && !member.isValid
                     ? "border-red-500/50 focus-visible:ring-red-500/50"
                     : member.isValid
-                    ? "border-orange-500/50 focus-visible:ring-orange-500/50"
+                    ? "border-trench-orange/50 focus-visible:ring-trench-orange"
                     : ""
                 }`}
               />
               {member.address && !member.isValid && member.error && (
-                <p
-                  className="text-xs text-red-400 font-sans"
-                >
+                <p className="text-xs text-red-400">
                   {member.error}
                 </p>
               )}
               {member.isValid && (
-                <p
-                  className="text-xs text-orange-400 font-mono flex items-center"
-                >
+                <p className="text-xs text-trench-orange flex items-center">
                   <Check className="w-3 h-3 mr-1" />
                   {index === 0 && member.address === publicKey?.toBase58() ? "You (creator)" : "Valid"}
                 </p>
@@ -521,14 +521,21 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           ))}
 
           {members.length < 3 && (
-              <Button
-                onClick={addMember}
-                variant="outline"
-              className="w-full border-dashed border-zinc-800 hover:border-orange-500/50 hover:bg-black font-mono text-xs"
-              >
-                <PlusCircleIcon className="w-4 h-4 mr-2" />
-              Add member
-              </Button>
+            <button
+              onClick={addMember}
+              className="
+                w-full px-4 py-3
+                bg-transparent border-2 border-dashed border-gray-700
+                font-button uppercase tracking-wider text-xs
+                text-gray-400 hover:text-white hover:border-trench-orange
+                transition-all duration-200
+                flex items-center justify-center gap-2
+              "
+              style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+            >
+              <PlusCircleIcon className="w-4 h-4" />
+              Add Member
+            </button>
           )}
         </div>
       ),
@@ -713,29 +720,24 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
                     {step > 0 && (
-                      <motion.div
+                      <motion.button
                         whileTap={{ scale: 0.98 }}
-                        className="relative p-[2px] w-full sm:w-auto"
+                        onClick={() => setStep(step - 1)}
+                        disabled={isCreating}
+                        className="
+                          w-full sm:w-auto px-8 py-3
+                          bg-transparent border-2 border-gray-700
+                          font-button uppercase tracking-widest text-xs
+                          text-white hover:border-gray-600
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                          transition-all duration-200
+                          flex items-center justify-center gap-2
+                        "
                         style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800" />
-                        <button
-                          onClick={() => setStep(step - 1)}
-                          disabled={isCreating}
-                          className="
-                            relative w-full px-8 py-3 bg-black
-                            font-button uppercase tracking-widest
-                            text-gray-300 hover:text-white
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                            transition-all duration-200
-                            flex items-center justify-center gap-2
-                          "
-                          style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
-                        >
-                          <ArrowLeft className="w-4 h-4" />
-                          <span>Back</span>
-                        </button>
-                      </motion.div>
+                        <ArrowLeft className="w-4 h-4" />
+                        <span>Back</span>
+                      </motion.button>
                     )}
 
                     {step < steps.length - 1 ? (
@@ -745,8 +747,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                         disabled={(step === 1 && !canProceedToCreation)}
                         className="
                           w-full sm:w-auto px-12 py-3
-                          bg-trench-orange hover:bg-orange-500
-                          font-button uppercase tracking-widest
+                          bg-trench-orange hover:bg-orange-600
+                          font-button uppercase tracking-widest text-xs
                           text-black
                           disabled:opacity-50 disabled:cursor-not-allowed
                           transition-all duration-200
@@ -764,8 +766,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                         disabled={isCreating}
                         className="
                           w-full sm:w-auto px-12 py-3
-                          bg-trench-orange hover:bg-orange-500
-                          font-button uppercase tracking-widest
+                          bg-trench-orange hover:bg-orange-600
+                          font-button uppercase tracking-widest text-xs
                           text-black
                           disabled:opacity-50 disabled:cursor-not-allowed
                           transition-all duration-200

@@ -43,17 +43,11 @@ export default function LandingPage() {
     setShowOnboarding(false);
     setIsCreatingMultisig(true);
     
-    // Wait a bit for Firestore to propagate and blockchain to confirm
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Wait for Firestore to propagate and blockchain to confirm
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Refresh to show the new multi-sig
-    router.refresh();
-    
-    // Wait another moment then clear loading
-    setTimeout(() => {
-      setIsCreatingMultisig(false);
-      router.refresh(); // One more refresh to be sure
-    }, 2000);
+    // Force hard reload to ensure Firestore data is fetched
+    window.location.reload();
   };
 
   // Show loading screen after multi-sig creation
@@ -132,8 +126,8 @@ export default function LandingPage() {
                 <h1 className="logo-text text-4xl font-bold text-white tracking-wider">
                   NOVA VAULT
                 </h1>
-                <p className="text-gray-400 text-sm">
-                  Secure multisig wallet for Solana
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Web3 safety is essential. Create vaults that<br />multiple wallets need to approve.
                 </p>
               </div>
 

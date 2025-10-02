@@ -191,62 +191,6 @@ const SettingsPage = async () => {
         </div>
       </div>
 
-      {/* Actions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Add Member */}
-        <div className="relative p-[2px]"
-             style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
-          <div className="absolute inset-0 bg-gray-800" />
-          <div 
-            className="relative bg-gray-900/50 overflow-hidden"
-            style={{ clipPath: 'polygon(10px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 10px), calc(100% - 10px) calc(100% - 2px), 2px calc(100% - 2px), 2px 10px)' }}
-          >
-          <div className="border-b border-gray-800 p-6">
-            <h3 className="text-lg font-bold text-white uppercase tracking-wider">
-              Add Member
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Add a new member to the multisig
-            </p>
-          </div>
-          <div className="p-6">
-            <AddMemberInput
-              multisigPda={multisigCookie!}
-              rpcUrl={HARDCODED_RPC_URL}
-              transactionIndex={Number(multisigInfo.transactionIndex) + 1}
-              programId={programId.toBase58()}
-            />
-          </div>
-          </div>
-        </div>
-
-        {/* Change Threshold */}
-        <div className="relative p-[2px]"
-             style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
-          <div className="absolute inset-0 bg-gray-800" />
-          <div 
-            className="relative bg-gray-900/50 overflow-hidden"
-            style={{ clipPath: 'polygon(10px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 10px), calc(100% - 10px) calc(100% - 2px), 2px calc(100% - 2px), 2px 10px)' }}
-          >
-          <div className="border-b border-gray-800 p-6">
-            <h3 className="text-lg font-bold text-white uppercase tracking-wider">
-              Change Threshold
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Update the approval threshold
-            </p>
-          </div>
-          <div className="p-6">
-            <ChangeThresholdInput
-              multisigPda={multisigCookie!}
-              rpcUrl={HARDCODED_RPC_URL}
-              transactionIndex={Number(multisigInfo.transactionIndex) + 1}
-              programId={programId.toBase58()}
-            />
-          </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

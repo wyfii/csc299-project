@@ -110,8 +110,7 @@ const RemoveMemberButton = ({
     router.refresh();
   };
   return (
-    <Button
-      disabled={false}
+    <button
       onClick={() =>
         toast.promise(removeMember, {
           id: "transaction",
@@ -120,9 +119,17 @@ const RemoveMemberButton = ({
           error: (e) => `Failed to propose: ${e}`,
         })
       }
+      className="
+        px-4 py-2
+        bg-transparent border border-gray-800
+        font-button uppercase tracking-wider text-xs
+        text-gray-400 hover:text-white hover:border-gray-700
+        transition-all duration-200
+      "
+      style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
     >
       Remove
-    </Button>
+    </button>
   );
 };
 

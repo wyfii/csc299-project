@@ -1,9 +1,11 @@
+"use client";
 import * as multisig from "nova-multisig-sdk";
 import ApproveButton from "./ApproveButton";
 import ExecuteButton from "./ExecuteButton";
 import RejectButton from "./RejectButton";
 import Link from "next/link";
-import { CheckCircle, Clock, XCircle, CheckCheck, Ban } from "lucide-react";
+import { CheckCircle, Clock, XCircle, CheckCheck, Ban, FileText, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ActionButtonsProps {
   rpcUrl: string;
@@ -38,55 +40,66 @@ export default function TransactionTable({
   }
 
   return (
-    <div className="divide-y divide-gray-800">
+    <div className="space-y-2">
       {transactions.map((transaction, index) => {
         const status = transaction.proposal?.status.__kind || "None";
         return (
-          <div
+          <motion.div
             key={index}
-            className="p-4 hover:bg-gray-900/30 transition-all duration-200"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+            className="
+              group relative
+              bg-gray-900/30
+              border-l-2 border-trench-orange/40
+              backdrop-blur-sm p-4
+              transition-all duration-200
+              hover:bg-gray-900/50 hover:border-trench-orange
+            "
+            style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
           >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              {/* Left side - Transaction info */}
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="flex items-center justify-center w-10 h-10 bg-gray-900 border border-gray-800 font-mono text-sm text-trench-orange font-bold"
-                    style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}
-                  >
-                    #{Number(transaction.index)}
-                  </div>
-                  
-                  <StatusBadge status={status} />
-                </div>
+            {/* Transaction Number Badge */}
+            <div 
+              className="
+                absolute -left-3 top-4
+                w-10 h-10 flex items-center justify-center
+                bg-black border-2 border-trench-orange
+                font-mono text-sm text-trench-orange font-bold
+              "
+              style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
+            >
+              #{Number(transaction.index)}
+            </div>
+
+            {/* Content - Horizontal Layout */}
+            <div className="flex items-center justify-between ml-7">
+              <div className="flex items-center gap-4 flex-1">
+                <StatusBadge status={status} />
                 
                 <Link
-                  href={createSolanaExplorerUrl(
-                    transaction.transactionPda,
-                    rpcUrl!
-                  )}
+                  href={createSolanaExplorerUrl(transaction.transactionPda, rpcUrl!)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block font-mono text-xs text-gray-400 hover:text-trench-orange transition-colors"
+                  className="font-mono text-xs text-gray-400 hover:text-trench-orange transition-colors flex items-center gap-1"
                 >
-                  {transaction.transactionPda.slice(0, 16)}...{transaction.transactionPda.slice(-16)}
+                  {transaction.transactionPda.slice(0, 8)}...{transaction.transactionPda.slice(-8)}
+                  <ExternalLink className="w-3 h-3" />
                 </Link>
               </div>
-
-              {/* Right side - Actions */}
-              <div className="flex items-center gap-2 flex-wrap">
+              
+              {/* Actions */}
+              <div className="flex items-center gap-2">
                 <ActionButtons
                   rpcUrl={rpcUrl!}
                   multisigPda={multisigPda!}
                   transactionIndex={Number(transaction.index)}
                   proposalStatus={status}
-                  programId={
-                    programId ? programId : multisig.PROGRAM_ID.toBase58()
-                  }
+                  programId={programId ? programId : multisig.PROGRAM_ID.toBase58()}
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>
@@ -99,20 +112,20 @@ function StatusBadge({ status }: { status: string }) {
       case "Approved":
         return {
           icon: CheckCircle,
-          text: "Approved",
-          color: "text-green-400 border-green-400/30 bg-green-400/10",
+          text: "Ready",
+          color: "text-trench-orange border-trench-orange/30 bg-trench-orange/10",
         };
       case "Executed":
         return {
           icon: CheckCheck,
-          text: "Executed",
-          color: "text-green-500 border-green-500/30 bg-green-500/10",
+          text: "Done",
+          color: "text-gray-500 border-gray-500/30 bg-gray-500/10",
         };
       case "Active":
         return {
           icon: Clock,
-          text: "Active",
-          color: "text-trench-orange border-trench-orange/30 bg-trench-orange/10",
+          text: "Pending",
+          color: "text-gray-400 border-gray-400/30 bg-gray-400/10",
         };
       case "Rejected":
         return {
@@ -124,13 +137,13 @@ function StatusBadge({ status }: { status: string }) {
         return {
           icon: Ban,
           text: "Cancelled",
-          color: "text-gray-400 border-gray-400/30 bg-gray-400/10",
+          color: "text-gray-500 border-gray-500/30 bg-gray-500/10",
         };
       default:
         return {
           icon: Clock,
           text: "Draft",
-          color: "text-gray-400 border-gray-400/30 bg-gray-400/10",
+          color: "text-gray-500 border-gray-500/30 bg-gray-500/10",
         };
     }
   };
@@ -140,10 +153,10 @@ function StatusBadge({ status }: { status: string }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-3 py-1 border font-button uppercase tracking-wider text-xs ${config.color}`}
-      style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}
+      className={`inline-flex items-center gap-1.5 px-2 py-1 border font-button uppercase tracking-wider text-[10px] ${config.color}`}
+      style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
     >
-      <Icon className="w-3 h-3" />
+      <Icon className="w-2.5 h-2.5" />
       {config.text}
     </div>
   );

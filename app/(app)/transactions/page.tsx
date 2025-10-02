@@ -132,21 +132,13 @@ export default async function TransactionsPage({
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white uppercase tracking-wider">
-            Transactions
-          </h1>
-          <p className="text-gray-400 mt-2">
-            {totalTransactions > 0 ? `${totalTransactions} total transactions` : 'No transactions yet'}
-          </p>
-        </div>
-        <CreateTransaction
-          rpcUrl={HARDCODED_RPC_URL}
-          multisigPda={multisigCookie}
-          vaultIndex={vaultIndex}
-          programId={OFFICIAL_PROGRAM_ID}
-        />
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white uppercase tracking-wider">
+          Transactions
+        </h1>
+        <p className="text-gray-400 mt-2">
+          {totalTransactions > 0 ? `${totalTransactions} total transactions` : 'No transactions yet'}
+        </p>
       </div>
 
       {/* Transactions List */}

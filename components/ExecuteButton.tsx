@@ -19,6 +19,7 @@ import { Dialog, DialogDescription, DialogHeader } from './ui/dialog';
 import { DialogTrigger } from './ui/dialog';
 import { DialogContent, DialogTitle } from './ui/dialog';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { range, HARDCODED_RPC_HEADERS, HARDCODED_RPC_URL } from '@/lib/utils';
 import { trackTransactionExecuted, trackUserAction, trackError } from '@/lib/analytics';
 
@@ -321,38 +322,68 @@ const ExecuteButton = ({
   };
   return (
     <Dialog>
-      <DialogTrigger
-        disabled={!isTransactionReady}
-        className="mr-2 h-10 px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        Execute
+      <DialogTrigger asChild>
+        <button
+          disabled={!isTransactionReady || isExecuting}
+          className={`
+            px-3 py-1.5
+            bg-transparent border
+            font-button uppercase tracking-wider text-[10px]
+            transition-all duration-200
+            ${!isTransactionReady || isExecuting
+              ? 'text-gray-600 border-gray-800 cursor-not-allowed' 
+              : 'text-gray-400 border-gray-800 hover:text-trench-orange hover:border-trench-orange'
+            }
+          `}
+          style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}
+        >
+          {isExecuting ? "Executing..." : "Execute"}
+        </button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Execute Transaction</DialogTitle>
-          <DialogDescription>
-            All required approvals have been received. Click below to execute this transaction.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="space-y-4 py-4">
-          <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
-            <p className="text-sm text-gray-300">
-              This transaction is ready to be executed on-chain. The network will process it with:
-            </p>
-            <ul className="text-xs text-gray-400 mt-2 space-y-1 list-disc list-inside">
-              <li>Optimal priority fee for fast confirmation</li>
-              <li>Sufficient compute budget for complex operations</li>
-            </ul>
-          </div>
-
-          <Button
-            disabled={!isTransactionReady || isExecuting}
-            onClick={executeTransaction}
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-6"
+      <DialogContent 
+        className="max-w-md p-0 overflow-hidden border-0 bg-transparent"
+      >
+        <div className="relative p-[2px]"
+             style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
+          <div className="absolute inset-0 bg-gray-800" />
+          <div className="relative bg-black"
+               style={{ clipPath: 'polygon(14px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 14px), calc(100% - 14px) calc(100% - 2px), 2px calc(100% - 2px), 2px 14px)' }}
           >
-            {isExecuting ? 'Executing...' : 'Execute Transaction'}
-          </Button>
+            <div className="border-b border-gray-800 p-6">
+              <DialogHeader>
+                <DialogTitle>Execute Transaction</DialogTitle>
+                <DialogDescription>
+                  All required approvals received. Execute this transaction.
+                </DialogDescription>
+              </DialogHeader>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="bg-gray-900/50 border border-gray-800 p-4"
+                   style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  This transaction is ready to be executed on-chain with optimal priority fee.
+                </p>
+              </div>
+
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                disabled={!isTransactionReady || isExecuting}
+                onClick={executeTransaction}
+                className="
+                  w-full px-6 py-3
+                  bg-trench-orange hover:bg-orange-500
+                  font-button uppercase tracking-wider
+                  text-black
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  transition-all duration-200
+                "
+                style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+              >
+                {isExecuting ? 'Executing...' : 'Execute Transaction'}
+              </motion.button>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
