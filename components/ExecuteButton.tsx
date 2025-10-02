@@ -331,8 +331,8 @@ const ExecuteButton = ({
             font-button uppercase tracking-wider text-[10px]
             transition-all duration-200
             ${!isTransactionReady || isExecuting
-              ? 'text-gray-600 border-gray-800 cursor-not-allowed' 
-              : 'text-gray-400 border-gray-800 hover:text-trench-orange hover:border-trench-orange'
+              ? 'text-gray-600 border-gray-800 cursor-not-allowed opacity-50' 
+              : 'text-trench-orange border-trench-orange hover:text-orange-500 hover:border-orange-500'
             }
           `}
           style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}

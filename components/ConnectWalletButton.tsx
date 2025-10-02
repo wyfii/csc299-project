@@ -41,13 +41,13 @@ const ConnectWallet = () => {
             className="relative p-[2px]"
             style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800" />
+            <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" />
             <button
               onClick={disconnect}
               className="
                 relative w-full px-5 py-3 bg-black
                 font-button uppercase tracking-widest
-                text-gray-400 hover:text-gray-300
+                text-trench-orange hover:text-orange-500
                 transition-all duration-200
                 flex items-center justify-center gap-2
               "

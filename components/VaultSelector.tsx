@@ -58,7 +58,7 @@ export function VaultSelector({ currentVaultIndex = 0 }: VaultSelectorProps) {
           style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
         >
           {/* Border gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800" />
+          <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" />
           
           <Button
             variant="outline"
@@ -67,7 +67,7 @@ export function VaultSelector({ currentVaultIndex = 0 }: VaultSelectorProps) {
             className="
               relative px-4 py-2 bg-black border-none
               font-button uppercase
-              text-gray-300 hover:text-gray-200 hover:bg-gray-900/50
+              text-trench-orange hover:text-orange-500
               transition-all duration-200
               flex items-center gap-2 min-w-[140px] justify-between
             "
@@ -88,7 +88,7 @@ export function VaultSelector({ currentVaultIndex = 0 }: VaultSelectorProps) {
       >
         {/* Border wrapper */}
         <div 
-          className="relative p-[2px] bg-gradient-to-r from-gray-700 to-gray-800"
+          className="relative p-[2px] bg-gradient-to-r from-trench-orange to-orange-500"
           style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
         >
           <div 

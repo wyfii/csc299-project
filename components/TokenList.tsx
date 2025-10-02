@@ -257,7 +257,7 @@ export function TokenList({
               >
                 {/* Border wrapper */}
                 <div 
-                  className="relative p-[2px] bg-gradient-to-r from-gray-700 to-gray-800"
+                  className="relative p-[2px] bg-gradient-to-r from-trench-orange to-orange-500"
                   style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                 >
                   <div 
@@ -378,7 +378,7 @@ export function TokenList({
                   >
                     {/* Border wrapper */}
                     <div 
-                      className="relative p-[2px] bg-gradient-to-r from-gray-700 to-gray-800"
+                      className="relative p-[2px] bg-gradient-to-r from-trench-orange to-orange-500"
                       style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                     >
                       <div 

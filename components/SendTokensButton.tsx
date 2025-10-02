@@ -208,7 +208,7 @@ const SendTokens = ({
             className="
               w-full px-4 py-2 text-left
               font-button uppercase
-              text-gray-400 hover:text-orange-500 hover:bg-gray-900/50
+              text-trench-orange hover:text-orange-500 hover:bg-gray-900/50
               transition-all duration-200
               flex items-center gap-2
             "
