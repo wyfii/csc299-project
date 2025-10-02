@@ -269,34 +269,29 @@ const SendSol = ({
             Send
           </button>
         ) : asButton ? (
-          <motion.div
+          <motion.button
             whileTap={{ scale: 0.98 }}
-            className="relative p-[2px]"
+            onClick={(e) => {
+              if (!wallet.publicKey) {
+                e.preventDefault();
+                walletModal.setVisible(true);
+                return;
+              }
+              setIsOpen(true);
+            }}
+            className="
+              px-5 py-2
+              bg-trench-orange hover:bg-orange-500
+              font-button uppercase tracking-widest
+              text-black
+              transition-all duration-200
+              flex items-center gap-2
+            "
             style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" />
-            <button
-              onClick={(e) => {
-                if (!wallet.publicKey) {
-                  e.preventDefault();
-                  walletModal.setVisible(true);
-                  return;
-                }
-                setIsOpen(true);
-              }}
-              className="
-                relative px-5 py-2 bg-black
-                font-button uppercase tracking-widest
-                text-trench-orange hover:text-orange-500
-                transition-all duration-200
-                flex items-center gap-2
-              "
-              style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
-            >
-              <Send className="w-3 h-3" />
-              <span>Send</span>
-            </button>
-          </motion.div>
+            <Send className="w-3 h-3" />
+            <span>Send</span>
+          </motion.button>
         ) : (
           <motion.div
             whileTap={{ scale: 0.98 }}

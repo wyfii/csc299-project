@@ -57,11 +57,11 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           className="hidden md:block md:left-0 md:top-0 md:w-64 z-40 h-auto md:h-screen md:fixed"
           aria-label="Sidebar"
         >
-          <div className="md:m-4 md:mr-2 relative p-[2px]"
+          <div className="h-full md:m-4 md:mr-2 relative p-[2px]"
                style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
             <div className="absolute inset-0 bg-gray-800" />
             <div 
-              className="relative flex h-auto md:h-full flex-col overflow-y-auto justify-between px-4 py-6 bg-black"
+              className="relative flex h-full flex-col overflow-y-auto justify-between px-4 py-6 bg-black"
               style={{ clipPath: 'polygon(14px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 14px), calc(100% - 14px) calc(100% - 2px), 2px calc(100% - 2px), 2px 14px)' }}
             >
             <div>
@@ -149,7 +149,9 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
         </aside>
 
         <div className="md:ml-64 flex-1">
-          <RenderMultisigRoute multisig={multisig} children={children} />
+          <RenderMultisigRoute multisig={multisig}>
+            {children}
+          </RenderMultisigRoute>
         </div>
       </div>
       <Toaster

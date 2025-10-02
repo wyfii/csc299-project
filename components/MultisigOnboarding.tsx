@@ -8,6 +8,7 @@ import { Connection, Keypair, PublicKey, clusterApiUrl, Transaction } from "@sol
 import { createMultisig, Member } from "@/lib/createSquad";
 import { HARDCODED_RPC_URL, OFFICIAL_PROGRAM_ID } from "@/lib/utils";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import * as multisig from "nova-multisig-sdk";
