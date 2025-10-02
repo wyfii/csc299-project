@@ -38,8 +38,8 @@ const RejectButton = ({
     httpHeaders: HARDCODED_RPC_HEADERS,
   } as any);
 
-  const validKinds = ["None", "Active", "Draft"];
-  const isKindValid = validKinds.includes(proposalStatus);
+  const finalStatuses = ["Executed", "Rejected", "Cancelled"];
+  const isFinalStatus = finalStatuses.includes(proposalStatus);
 
   const rejectTransaction = async () => {
     if (!wallet.publicKey) {
@@ -49,8 +49,8 @@ const RejectButton = ({
     
     const bigIntTransactionIndex = BigInt(transactionIndex);
 
-    if (!isKindValid) {
-      toast.error("You can't reject this proposal.");
+    if (isFinalStatus) {
+      toast.error("Cannot reject a finalized transaction.");
       return;
     }
 
@@ -132,7 +132,7 @@ const RejectButton = ({
   };
   return (
     <button
-      disabled={!isKindValid}
+      disabled={isFinalStatus}
       onClick={() =>
         toast.promise(rejectTransaction, {
           id: "transaction",
@@ -146,9 +146,9 @@ const RejectButton = ({
         bg-transparent border
         font-button uppercase tracking-wider text-[10px]
         transition-all duration-200
-        ${!isKindValid 
+        ${isFinalStatus
           ? 'text-gray-600 border-gray-800 cursor-not-allowed opacity-50' 
-          : 'text-trench-orange border-trench-orange hover:text-orange-500 hover:border-orange-500'
+          : 'text-trench-orange border-trench-orange hover:text-orange-500 hover:border-orange-500 cursor-pointer'
         }
       `}
       style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}

@@ -153,21 +153,12 @@ export default async function TransactionsPage({
         </div>
       }>
         {transactions.length > 0 ? (
-          <div className="relative p-[2px]"
-               style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
-            <div className="absolute inset-0 bg-gray-800" />
-            <div 
-              className="relative bg-gray-900/50 overflow-hidden"
-              style={{ clipPath: 'polygon(10px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 10px), calc(100% - 10px) calc(100% - 2px), 2px calc(100% - 2px), 2px 10px)' }}
-            >
-              <TransactionTable
-                multisigPda={multisigCookie}
-                rpcUrl={HARDCODED_RPC_URL}
-                transactions={transactions}
-                programId={OFFICIAL_PROGRAM_ID}
-              />
-            </div>
-          </div>
+          <TransactionTable
+            multisigPda={multisigCookie}
+            rpcUrl={HARDCODED_RPC_URL}
+            transactions={transactions}
+            programId={OFFICIAL_PROGRAM_ID}
+          />
         ) : (
           <div className="bg-gray-900/30 border border-gray-800 p-12 text-center"
                style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>

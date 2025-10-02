@@ -222,28 +222,24 @@ const ApproveButton = ({
   return (
     <>
       <button
-        disabled={hasAlreadyApproved || isFinalStatus}
         onClick={() => {
           if (!wallet.publicKey) {
             walletModal.setVisible(true);
             return;
           }
-          // Open the multi-sig approval flow modal
           setShowApprovalFlow(true);
         }}
-        className={`
+        className="
           px-3 py-1.5
-          bg-transparent border
+          bg-transparent border border-trench-orange
           font-button uppercase tracking-wider text-[10px]
+          text-trench-orange hover:text-orange-500 hover:border-orange-500
           transition-all duration-200
-          ${hasAlreadyApproved || isFinalStatus
-            ? 'text-gray-500 border-gray-700 cursor-not-allowed opacity-50' 
-            : 'text-trench-orange border-trench-orange hover:text-orange-500 hover:border-orange-500 cursor-pointer'
-          }
-        `}
+          cursor-pointer
+        "
         style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}
       >
-        {hasAlreadyApproved ? "Approved ✓" : isFinalStatus ? "N/A" : "Approve"}
+        Approve
       </button>
 
       <MultiSigApprovalModal
