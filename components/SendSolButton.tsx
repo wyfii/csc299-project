@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { Send } from "lucide-react";
+import { Send, X } from "lucide-react";
 import * as multisig from "nova-multisig-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction, clusterApiUrl } from "@solana/web3.js";
@@ -20,6 +20,7 @@ import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { isPublickey } from "@/lib/isPublickey";
+import { motion } from "framer-motion";
 
 type SendSolProps = {
   rpcUrl: string;
@@ -27,6 +28,7 @@ type SendSolProps = {
   vaultIndex: number;
   programId?: string;
   asMenuItem?: boolean;
+  asButton?: boolean;
 };
 
 const SendSol = ({
@@ -35,6 +37,7 @@ const SendSol = ({
   vaultIndex,
   programId,
   asMenuItem = false,
+  asButton = false,
 }: SendSolProps) => {
   const wallet = useWallet();
   const walletModal = useWalletModal();
@@ -265,118 +268,200 @@ const SendSol = ({
             <Send className="w-3 h-3" />
             Send
           </button>
-        ) : (
-          <Button 
-            onClick={(e) => {
-              if (!wallet.publicKey) {
-                e.preventDefault();
-                walletModal.setVisible(true);
-                return;
-              }
-            }}
-            className="bg-white text-black hover:bg-gray-200 rounded-full px-4 py-1.5 text-xs font-medium transition-colors"
+        ) : asButton ? (
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            className="relative p-[2px]"
+            style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
           >
-            SEND
-          </Button>
+            <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" />
+            <button
+              onClick={(e) => {
+                if (!wallet.publicKey) {
+                  e.preventDefault();
+                  walletModal.setVisible(true);
+                  return;
+                }
+                setIsOpen(true);
+              }}
+              className="
+                relative px-5 py-2 bg-black
+                font-button uppercase tracking-widest
+                text-trench-orange hover:text-orange-500
+                transition-all duration-200
+                flex items-center gap-2
+              "
+              style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
+            >
+              <Send className="w-3 h-3" />
+              <span>Send</span>
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            className="relative p-[2px]"
+            style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800" />
+            <button
+              onClick={(e) => {
+                if (!wallet.publicKey) {
+                  e.preventDefault();
+                  walletModal.setVisible(true);
+                  return;
+                }
+                setIsOpen(true);
+              }}
+              className="
+                relative px-5 py-2 bg-black
+                font-button uppercase tracking-widest
+                text-gray-300 hover:text-gray-200 hover:bg-gray-900/50
+                transition-all duration-200
+                flex items-center gap-2
+              "
+              style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
+            >
+              <Send className="w-3 h-3" />
+              <span>Send</span>
+            </button>
+          </motion.div>
         )}
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Transfer SOL</DialogTitle>
-          <DialogDescription>
-            Create a proposal to transfer SOL to another address.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent 
+        className="max-w-md p-0 overflow-hidden border-0 bg-transparent"
+      >
+        <div className="relative p-[2px]"
+             style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
+          <div className="absolute inset-0 bg-gray-800" />
+          <div className="relative bg-black"
+               style={{ clipPath: 'polygon(14px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 14px), calc(100% - 14px) calc(100% - 2px), 2px calc(100% - 2px), 2px 14px)' }}
+          >
+        {/* Close button */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute right-4 top-4 z-10 text-gray-400 hover:text-white transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {/* Header */}
+        <div className="border-b border-gray-800 p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-white uppercase tracking-wider">
+              Send SOL
+            </DialogTitle>
+            <DialogDescription className="text-gray-400 mt-2">
+              Create a proposal to transfer SOL
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-4">
         
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <label className="text-sm text-gray-400">Recipient</label>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-xs text-gray-500 uppercase tracking-wider">Recipient</label>
+              {recipient !== wallet.publicKey?.toBase58() && (
+                <button
+                  onClick={() => setRecipient(wallet.publicKey?.toBase58() || "")}
+                  className="text-xs text-trench-orange hover:text-orange-500 font-button uppercase"
+                >
+                  Use my wallet
+                </button>
+              )}
+            </div>
+            
             {savedRecipients.length > 0 && (
-              <button
-                onClick={() => setRecipient(wallet.publicKey?.toBase58() || "")}
-                className="text-xs text-orange-400 hover:text-orange-300"
+              <select
+                className="w-full bg-gray-900 border border-gray-800 px-3 py-2 text-sm text-white font-mono"
+                style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+                onChange={(e) => setRecipient(e.target.value)}
+                value=""
               >
-                Use my wallet
-              </button>
+                <option value="">Recent recipients...</option>
+                {savedRecipients.map((addr, i) => (
+                  <option key={i} value={addr}>
+                    {addr.slice(0, 8)}...{addr.slice(-8)}
+                  </option>
+                ))}
+              </select>
+            )}
+            
+            <Input
+              placeholder={wallet.publicKey ? `${wallet.publicKey.toBase58().slice(0,4)}...${wallet.publicKey.toBase58().slice(-4)} (your wallet)` : "Recipient address"}
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              className="font-mono text-xs"
+            />
+            {recipient && !isPublickey(recipient) && (
+              <p className="text-xs text-red-400">Invalid recipient address</p>
             )}
           </div>
-          
-          {savedRecipients.length > 0 && (
-            <select
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm"
-              onChange={(e) => setRecipient(e.target.value)}
-              value=""
-            >
-              <option value="">Recent recipients...</option>
-              {savedRecipients.map((addr, i) => (
-                <option key={i} value={addr}>
-                  {addr.slice(0, 8)}...{addr.slice(-8)}
-                </option>
-              ))}
-            </select>
-          )}
-          
-          <Input
-            placeholder={wallet.publicKey ? `Default: ${wallet.publicKey.toBase58().slice(0,4)}...${wallet.publicKey.toBase58().slice(-4)} (your wallet)` : "Recipient address"}
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-          />
-          {isPublickey(recipient) ? null : (
-            <p className="text-xs text-red-400">Invalid recipient address</p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <label className="text-sm text-gray-400">Amount</label>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">
-                Available: {(vaultBalance / LAMPORTS_PER_SOL).toFixed(6)} SOL
-              </span>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={setMaxAmount}
-                className="h-6 px-2 text-xs"
-              >
-                MAX
-              </Button>
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-xs text-gray-500 uppercase tracking-wider">Amount</label>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 font-mono">
+                  {(vaultBalance / LAMPORTS_PER_SOL).toFixed(6)} SOL
+                </span>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={setMaxAmount}
+                  className="px-2 py-1 bg-gray-900 border border-gray-800 text-xs font-button uppercase text-gray-400 hover:text-white"
+                  style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}
+                >
+                  MAX
+                </motion.button>
+              </div>
             </div>
+            <Input
+              placeholder="0.0"
+              type="number"
+              step="0.000000001"
+              min="0"
+              max={getMaxTransferAmount()}
+              value={amount || ''}
+              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+              className="font-mono"
+            />
+            {amount > getMaxTransferAmount() && (
+              <p className="text-xs text-red-400">
+                ⚠️ Max: {getMaxTransferAmount().toFixed(6)} SOL (keeping {MIN_VAULT_RESERVE} SOL reserve)
+              </p>
+            )}
           </div>
-          <Input
-            placeholder="Amount (e.g., 0.1 for 0.1 SOL)"
-            type="number"
-            step="0.000000001"
-            min="0"
-            max={getMaxTransferAmount()}
-            value={amount || ''}
-            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-          />
-          {amount > getMaxTransferAmount() && (
-            <p className="text-xs text-red-400">
-              ⚠️ Amount exceeds available! Max: {getMaxTransferAmount().toFixed(6)} SOL (keeping {MIN_VAULT_RESERVE} SOL reserve)
-            </p>
-          )}
-          {vaultBalance > 0 && (
-            <p className="text-xs text-gray-500">
-              💡 Tip: We keep {MIN_VAULT_RESERVE} SOL in the vault for rent-exemption
-            </p>
-          )}
+
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={() =>
+              toast.promise(transfer, {
+                id: "transaction",
+                loading: "Loading...",
+                success: "Transfer proposed.",
+                error: (e) => `Failed to propose: ${e}`,
+              })
+            }
+            disabled={!isPublickey(recipient) || amount <= 0 || amount > getMaxTransferAmount()}
+            className="
+              w-full px-6 py-3
+              bg-trench-orange hover:bg-orange-500
+              font-button uppercase tracking-wider
+              text-black
+              disabled:opacity-50 disabled:cursor-not-allowed
+              transition-all duration-200
+            "
+            style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+          >
+            {amount > 0 ? `Send ${amount} SOL` : 'Send SOL'}
+          </motion.button>
         </div>
-        <Button
-          onClick={() =>
-            toast.promise(transfer, {
-              id: "transaction",
-              loading: "Loading...",
-              success: "Transfer proposed.",
-              error: (e) => `Failed to propose: ${e}`,
-            })
-          }
-          disabled={!isPublickey(recipient) || amount <= 0 || amount > getMaxTransferAmount()}
-        >
-          Transfer {amount > 0 ? `${amount} SOL` : ''}
-        </Button>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

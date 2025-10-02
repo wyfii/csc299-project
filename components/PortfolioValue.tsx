@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { motion, useSpring, useTransform } from "framer-motion";
-import { Copy, QrCode, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import * as multisig from "nova-multisig-sdk";
 import SendSol from "./SendSolButton";
 import { VaultSelector } from "./VaultSelector";
 import DecryptedText from "./DecryptedText";
+import DepositButton from "./DepositButton";
 
 interface PortfolioValueProps {
   solBalance: number;
@@ -410,46 +411,17 @@ export function PortfolioValue({ solBalance, tokens, rpcUrl, vaultAddress, vault
           transition={{ delay: 0.6 }}
           className="flex gap-3"
         >
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            className="
-              px-4 py-2
-              bg-orange-500 text-black 
-              font-button uppercase
-              hover:bg-orange-400
-              transition-all duration-200
-              flex items-center gap-1.5
-            "
-            style={{ 
-              clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' 
-            }}
-          >
-            <ArrowDownLeft className="w-3 h-3" />
-            Deposit
-          </motion.button>
+          <DepositButton vaultAddress={vaultAddress} vaultIndex={vaultIndex} />
           
-          <motion.div 
-            className="relative p-[2px]"
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
-          >
-            {/* Border gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800" />
-            
-            <button className="
-              relative px-4 py-2 bg-black 
-              font-button uppercase
-              text-gray-400 hover:text-gray-300 hover:bg-gray-900/50
-              transition-all duration-200
-              flex items-center gap-1.5
-            "
-            style={{ clipPath: 'polygon(4px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), 2px calc(100% - 2px), 2px 4px)' }}>
-              <ArrowUpRight className="w-3 h-3" />
-              Send
-        </button>
-          </motion.div>
+          {multisigPda && (
+            <SendSol
+              rpcUrl={rpcUrl}
+              multisigPda={multisigPda}
+              vaultIndex={vaultIndex}
+              programId={programId}
+              asButton={true}
+            />
+          )}
         </motion.div>
       </div>
       </div>

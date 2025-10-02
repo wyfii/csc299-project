@@ -29,16 +29,10 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
       route: "/transactions",
     },
     {
-      name: "Configuration",
-      icon: <Users />,
-      route: "/config",
+      name: "Settings",
+      icon: <Settings />,
+      route: "/settings",
     },
-    // Hidden for now
-    // {
-    //   name: "Settings",
-    //   icon: <Settings />,
-    //   route: "/settings",
-    // },
   ];
 
   const headersList = headers();
@@ -63,7 +57,13 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           className="hidden md:block md:left-0 md:top-0 md:w-64 z-40 h-auto md:h-screen md:fixed"
           aria-label="Sidebar"
         >
-          <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between border border-zinc-900 px-4 py-6 bg-zinc-950/30 md:m-4 md:mr-2 md:rounded-xl">
+          <div className="md:m-4 md:mr-2 relative p-[2px]"
+               style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
+            <div className="absolute inset-0 bg-gray-800" />
+            <div 
+              className="relative flex h-auto md:h-full flex-col overflow-y-auto justify-between px-4 py-6 bg-black"
+              style={{ clipPath: 'polygon(14px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 14px), calc(100% - 14px) calc(100% - 2px), 2px calc(100% - 2px), 2px 14px)' }}
+            >
             <div>
               <Link href="/">
                 <div className="mb-10 flex items-center gap-3 px-3 py-2 text-white hover:opacity-80 transition-opacity">
@@ -79,25 +79,26 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                   </h1>
                 </div>
               </Link>
-              <ul className="space-y-1 text-sm font-medium">
+              <ul className="space-y-2 text-sm font-medium">
                 {tabs.map((tab) => {
                   const isActive = (path!.startsWith(`${tab.route}/`) && tab.route != "/") || tab.route === path;
                   return (
                     <li key={tab.route}>
                       <a
                         href={tab.route}
-                        className={`flex items-center px-4 py-3 text-white transition-all text-sm relative ${
+                        className={`flex items-center px-4 py-3 text-white transition-all font-button uppercase tracking-wider relative ${
                           isActive
-                            ? "opacity-100"
-                            : "opacity-50 hover:opacity-80"
+                            ? "text-white bg-gray-900/50"
+                            : "text-gray-500 hover:text-gray-300 hover:bg-gray-900/30"
                         }`}
+                        style={{ clipPath: isActive ? 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' : undefined }}
                       >
-                        {tab.icon}
-                        <span className="ml-3 flex-1 whitespace-nowrap text-base font-medium">
+                        <span className="w-5">{tab.icon}</span>
+                        <span className="ml-3 flex-1 whitespace-nowrap">
                           {tab.name}
                         </span>
                         {isActive && (
-                          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white rounded-full" />
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-trench-orange" />
                         )}
                       </a>
                     </li>
@@ -107,6 +108,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <ConnectWallet />
+            </div>
           </div>
         </aside>
 
@@ -116,7 +118,9 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           aria-label="Mobile navbar"
         >
           <div className="flex items-center justify-center p-4 pb-6">
-            <div className="bg-black/40 backdrop-blur-xl border border-zinc-800/50 rounded-full p-2 shadow-2xl">
+            <div className="bg-black/90 backdrop-blur-xl border border-gray-800 p-2 shadow-2xl"
+                 style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+            >
               <div className="flex gap-2">
                 {tabs.map((tab) => {
                   const isActive = path === tab.route || (path?.startsWith(`${tab.route}/`) && tab.route !== "/");
@@ -124,14 +128,15 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                     <Link href={tab.route} key={tab.route}>
                       <button
                         type="button"
-                        className={`inline-flex flex-col items-center justify-center px-6 py-3 rounded-full transition-all ${
+                        className={`inline-flex flex-col items-center justify-center px-6 py-3 transition-all font-button uppercase tracking-wider ${
                           isActive 
-                            ? "bg-white/20 text-white" 
-                            : "text-white/50 hover:text-white/80 hover:bg-white/10"
+                            ? "bg-trench-orange text-black" 
+                            : "text-gray-400 hover:text-white hover:bg-gray-900/50"
                         }`}
+                        style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                       >
                         {tab.icon}
-                        <span className="text-xs mt-1 font-medium">
+                        <span className="text-xs mt-1 font-bold">
                           {tab.name}
                         </span>
                       </button>

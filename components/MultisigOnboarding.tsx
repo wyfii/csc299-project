@@ -540,7 +540,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         <div className="space-y-6" onLoad={() => checkUserBalance()}>
           {/* Balance warning if insufficient SOL */}
           {balanceChecked && userBalance < MULTISIG_CREATION_COST_SOL && !useNVAIPayment && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+            <div className="bg-red-500/10 border border-red-500/30 p-4"
+                 style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
@@ -557,12 +558,13 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             {/* Standard SOL Payment */}
             <div
               className={`
-                p-6 rounded-xl border-2 cursor-pointer transition-all
+                p-6 border-2 cursor-pointer transition-all
                 ${!useNVAIPayment 
-                  ? 'bg-zinc-800/50 border-orange-500 shadow-lg shadow-orange-500/20' 
-                  : 'bg-zinc-800/30 border-zinc-700 hover:border-zinc-600'
+                  ? 'bg-gray-900/80 border-trench-orange' 
+                  : 'bg-gray-900/30 border-gray-800 hover:border-gray-700'
                 }
               `}
+              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
               onClick={() => {
                 setUseNVAIPayment(false);
                 checkUserBalance();
@@ -573,20 +575,21 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   {getTokenImage("SOL", 48)}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-white mb-1">Pay with SOL</h3>
+                  <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-wider">Pay with SOL</h3>
                   <p className="text-xs text-gray-400">Standard payment method</p>
-                  <p className="text-sm text-white mt-2">
-                    Cost: <span className="font-bold text-orange-400">~{MULTISIG_CREATION_COST_SOL} SOL</span>
+                  <p className="text-sm text-white mt-2 font-mono">
+                    Cost: <span className="font-bold text-trench-orange">~{MULTISIG_CREATION_COST_SOL} SOL</span>
                   </p>
                   {balanceChecked && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Your balance: {userBalance.toFixed(4)} SOL
+                    <p className="text-xs text-gray-500 mt-1 font-mono">
+                      Balance: {userBalance.toFixed(4)} SOL
                     </p>
                   )}
                 </div>
                 {!useNVAIPayment && (
-                  <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
+                  <div className="w-6 h-6 bg-trench-orange flex items-center justify-center"
+                       style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
+                    <Check className="w-4 h-4 text-black" />
                   </div>
                 )}
               </div>
@@ -611,10 +614,11 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       icon: Check,
       content: (
         <div className="space-y-4">
-          <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4">
+          <div className="bg-gray-900/50 border border-gray-800 p-4"
+               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-gray-500">MEMBERS</span>
-              <span className="text-xs text-gray-500">{Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}</span>
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Members</span>
+              <span className="text-xs text-white font-bold">{Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}</span>
             </div>
             <div className="space-y-2">
               {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).map((addr, index) => {
@@ -636,19 +640,21 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
           </div>
 
-          <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4">
+          <div className="bg-gray-900/50 border border-gray-800 p-4"
+               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">THRESHOLD</span>
-              <span className="text-sm text-white font-medium">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Threshold</span>
+              <span className="text-sm text-white font-bold font-mono">
                 {Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}/{Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}
               </span>
             </div>
           </div>
 
-          <div className="bg-zinc-950 border border-zinc-900 rounded-lg p-4">
+          <div className="bg-gray-900/50 border border-gray-800 p-4"
+               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">PAYMENT</span>
-              <span className="text-sm text-white font-medium">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">Payment</span>
+              <span className="text-sm text-trench-orange font-bold font-mono">
                 {useNVAIPayment ? "NVAI" : `${MULTISIG_CREATION_COST_SOL} SOL`}
               </span>
             </div>
@@ -665,76 +671,118 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center overflow-y-auto antialiased bg-black">
+          {/* Grain overlay */}
+          <div className="grain-overlay" />
+
           {/* Modal - Mobile responsive */}
           <div
-            className="relative w-full max-w-2xl bg-black border-0 md:border border-zinc-900 overflow-hidden md:rounded-none my-0 md:my-8 min-h-screen md:min-h-0"
+            className="relative w-full max-w-2xl bg-black border-0 md:border border-gray-800 overflow-hidden my-0 md:my-8 min-h-screen md:min-h-0"
+            style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}
           >
+            {/* Decorative lines */}
+            <div className="absolute top-0 right-0 w-[2px] h-20 bg-trench-orange/50" />
+            <div className="absolute bottom-0 left-0 w-[2px] h-24 bg-trench-orange/30" />
+
             {/* Progress Bar */}
-            <div className="h-px bg-zinc-900">
+            <div className="h-1 bg-gray-900">
               <div
-                className="h-full bg-orange-500"
+                className="h-full bg-trench-orange transition-all duration-300"
                 style={{ width: `${((step + 1) / steps.length) * 100}%` }}
               />
             </div>
 
             {/* Content */}
-            <div className="p-4 md:p-8 pb-6 md:pb-8">
+            <div className="p-6 md:p-10 pb-8 md:pb-12">
               <div >
                 <div
                   key={step}
-                  className="space-y-6"
+                  className="space-y-8"
                 >
                   {/* Icon & Title */}
                   <div className="text-center">
-                    <h2 className="text-xl md:text-2xl font-medium text-white">
+                    <h2 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-wider">
                       {currentStepData.title}
                     </h2>
-                    <p className="text-xs md:text-sm text-gray-500 mt-1">{currentStepData.subtitle}</p>
+                    <p className="text-sm text-gray-400 mt-2">{currentStepData.subtitle}</p>
                   </div>
 
                   {/* Step Content */}
-                  <div className="py-4">{currentStepData.content}</div>
+                  <div className="py-6">{currentStepData.content}</div>
 
                   {/* Actions */}
-                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 pt-4">
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
                     {step > 0 && (
-                      <Button
-                        variant="ghost"
-                        onClick={() => setStep(step - 1)}
-                        disabled={isCreating}
-                        className="bg-transparent text-white border border-zinc-800 hover:bg-zinc-900 rounded-full px-6 py-2 text-xs font-medium"
+                      <motion.div
+                        whileTap={{ scale: 0.98 }}
+                        className="relative p-[2px] w-full sm:w-auto"
+                        style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
                       >
-                        <ArrowLeft className="w-3 h-3 mr-2" />
-                        BACK
-                      </Button>
+                        <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-800" />
+                        <button
+                          onClick={() => setStep(step - 1)}
+                          disabled={isCreating}
+                          className="
+                            relative w-full px-8 py-3 bg-black
+                            font-button uppercase tracking-widest
+                            text-gray-300 hover:text-white
+                            disabled:opacity-50 disabled:cursor-not-allowed
+                            transition-all duration-200
+                            flex items-center justify-center gap-2
+                          "
+                          style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
+                        >
+                          <ArrowLeft className="w-4 h-4" />
+                          <span>Back</span>
+                        </button>
+                      </motion.div>
                     )}
 
                     {step < steps.length - 1 ? (
-                      <Button
+                      <motion.button
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => setStep(step + 1)}
                         disabled={(step === 1 && !canProceedToCreation)}
-                        className="bg-white text-black hover:bg-gray-200 rounded-full px-8 py-2 text-xs font-medium"
+                        className="
+                          w-full sm:w-auto px-12 py-3
+                          bg-trench-orange hover:bg-orange-500
+                          font-button uppercase tracking-widest
+                          text-black
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                          transition-all duration-200
+                          flex items-center justify-center gap-2
+                        "
+                        style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
                       >
-                        CONTINUE
-                        <ArrowRight className="w-3 h-3 ml-2" />
-                      </Button>
+                        <span>Continue</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </motion.button>
                     ) : (
-                      <Button
+                      <motion.button
+                        whileTap={{ scale: 0.98 }}
                         onClick={createMultisigWallet}
                         disabled={isCreating}
-                        className="bg-white text-black hover:bg-gray-200 rounded-full px-12 py-2 text-xs font-medium"
+                        className="
+                          w-full sm:w-auto px-12 py-3
+                          bg-trench-orange hover:bg-orange-500
+                          font-button uppercase tracking-widest
+                          text-black
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                          transition-all duration-200
+                          flex items-center justify-center gap-2
+                        "
+                        style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
                       >
                         {isCreating ? (
                           <>
-                            <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
-                            CREATING...
+                            <div className="w-4 h-4 border-2 border-black border-t-transparent animate-spin" />
+                            <span>Creating...</span>
                           </>
                         ) : (
                           <>
-                            CREATE VAULT
+                            <span>Create Vault</span>
                           </>
                         )}
-                      </Button>
+                      </motion.button>
                     )}
                   </div>
                 </div>

@@ -93,6 +93,9 @@ export default function LandingPage() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center antialiased bg-black">
+      {/* Grain overlay */}
+      <div className="grain-overlay" />
+
       {/* Centered Card */}
       <div className="relative z-10 w-full max-w-md mx-4">
         <motion.div
@@ -103,28 +106,59 @@ export default function LandingPage() {
             delay: 0.2,
             ease: "easeOut"
           }}
-          className="bg-zinc-950 border border-zinc-900 p-12 rounded-lg"
+          className="relative p-[2px]"
+          style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}
         >
-          <div className="text-center space-y-8">
-            <div className="space-y-4">
-              <Image
-                src="/logo.png"
-                alt="Nova"
-                width={64}
-                height={64}
-                className="w-16 h-16 mx-auto"
-              />
-              <h1 className="logo-text text-4xl font-bold text-white tracking-wider">
-                NOVA VAULT
-              </h1>
-            </div>
+          {/* Border gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-trench-orange/30 via-trench-orange/20 to-trench-orange/30" />
 
-            <Button
-              onClick={() => walletModal.setVisible(true)}
-              className="w-full bg-white text-black hover:bg-gray-200 rounded-full text-xs font-medium py-3 transition-colors"
-            >
-              CONNECT WALLET
-            </Button>
+          <div 
+            className="relative bg-black p-12"
+            style={{ clipPath: 'polygon(14px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 14px), calc(100% - 14px) calc(100% - 2px), 2px calc(100% - 2px), 2px 14px)' }}
+          >
+            {/* Decorative lines */}
+            <div className="absolute top-0 right-0 w-[2px] h-16 bg-trench-orange/50" />
+            <div className="absolute bottom-0 left-0 w-[2px] h-20 bg-trench-orange/30" />
+
+            <div className="text-center space-y-8">
+              <div className="space-y-4">
+                <Image
+                  src="/logo.png"
+                  alt="Nova"
+                  width={64}
+                  height={64}
+                  className="w-16 h-16 mx-auto"
+                />
+                <h1 className="logo-text text-4xl font-bold text-white tracking-wider">
+                  NOVA VAULT
+                </h1>
+                <p className="text-gray-400 text-sm">
+                  Secure multisig wallet for Solana
+                </p>
+              </div>
+
+              <motion.div
+                whileTap={{ scale: 0.98 }}
+                className="relative p-[2px]"
+                style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" />
+                <button
+                  onClick={() => walletModal.setVisible(true)}
+                  className="
+                    relative w-full px-6 py-3 bg-black
+                    font-button uppercase tracking-widest
+                    text-trench-orange hover:text-orange-500
+                    transition-all duration-200
+                    flex items-center justify-center gap-2
+                  "
+                  style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
+                >
+                  <Wallet className="w-4 h-4" />
+                  <span>Connect Wallet</span>
+                </button>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>
