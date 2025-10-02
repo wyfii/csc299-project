@@ -25,7 +25,7 @@ export default function TransactionTable({
   rpcUrl: string;
   transactions: {
     transactionPda: string;
-    proposal: multisig.generated.Proposal | null;
+    proposal: { status: { __kind: string } } | null;
     index: bigint;
   }[];
   programId?: string;
@@ -40,48 +40,37 @@ export default function TransactionTable({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {transactions.map((transaction, index) => {
         const status = transaction.proposal?.status.__kind || "None";
         return (
           <motion.div
             key={index}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, delay: index * 0.03 }}
             className="
-              group relative
-              bg-gray-900/30
-              border-l-2 border-trench-orange/40
-              backdrop-blur-sm p-4
+              bg-transparent
+              border-b border-gray-900
+              p-4
               transition-all duration-200
-              hover:bg-gray-900/50 hover:border-trench-orange
+              hover:bg-gray-900/20
             "
-            style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
           >
-            {/* Transaction Number Badge */}
-            <div 
-              className="
-                absolute -left-3 top-4
-                w-10 h-10 flex items-center justify-center
-                bg-black border-2 border-trench-orange
-                font-mono text-sm text-trench-orange font-bold
-              "
-              style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
-            >
-              #{Number(transaction.index)}
-            </div>
-
             {/* Content - Horizontal Layout */}
-            <div className="flex items-center justify-between ml-7">
+            <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-4 flex-1">
+                <span className="font-mono text-sm text-gray-500 min-w-[40px]">
+                  #{Number(transaction.index)}
+                </span>
+                
                 <StatusBadge status={status} />
                 
                 <Link
                   href={createSolanaExplorerUrl(transaction.transactionPda, rpcUrl!)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-xs text-gray-400 hover:text-trench-orange transition-colors flex items-center gap-1"
+                  className="font-mono text-xs text-gray-500 hover:text-trench-orange transition-colors flex items-center gap-1"
                 >
                   {transaction.transactionPda.slice(0, 8)}...{transaction.transactionPda.slice(-8)}
                   <ExternalLink className="w-3 h-3" />
@@ -153,11 +142,10 @@ function StatusBadge({ status }: { status: string }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-2 py-1 border font-button uppercase tracking-wider text-[10px] ${config.color}`}
-      style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
+      className={`inline-flex items-center gap-1.5 text-xs ${config.color}`}
     >
-      <Icon className="w-2.5 h-2.5" />
-      {config.text}
+      <Icon className="w-3 h-3" />
+      <span className="font-medium">{config.text}</span>
     </div>
   );
 }
