@@ -8,9 +8,9 @@ import { PortfolioWrapper } from "@/components/PortfolioWrapper";
 import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
 import { HARDCODED_RPC_URL, HARDCODED_RPC_HEADERS } from "@/lib/utils";
 
-// Add caching to reduce RPC calls
-export const revalidate = 30; // Cache for 30 seconds
-export const dynamic = 'force-dynamic'; // Still dynamic for user-specific data
+// Force dynamic to ensure vault switching works immediately
+export const revalidate = 0; // No caching - always fetch fresh data
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const connection = new Connection(HARDCODED_RPC_URL, {
@@ -75,19 +75,32 @@ export default async function Home() {
 
   try {
     solBalance = await connection.getBalance(multisigVault);
-    tokensInWallet = await connection.getParsedTokenAccountsByOwner(
+    const rawTokens = await connection.getParsedTokenAccountsByOwner(
       multisigVault,
       {
         programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
       }
     );
+    
+    // Serialize PublicKey objects to strings to avoid React warnings
+    tokensInWallet = {
+      context: rawTokens.context,
+      value: rawTokens.value.map((token) => ({
+        pubkey: token.pubkey.toBase58(),
+        account: {
+          ...token.account,
+          owner: token.account.owner.toBase58(),
+          data: token.account.data,
+        }
+      }))
+    };
   } catch (error) {
     console.error("Failed to fetch vault data:", error);
     // Continue with default values (0 balance, no tokens)
   }
 
   return (
-    <main className="p-6 max-w-3xl mx-auto">
+    <main className="p-6 max-w-5xl mx-auto">
       <PortfolioWrapper
         solBalance={solBalance}
         tokens={tokensInWallet}
@@ -95,7 +108,7 @@ export default async function Home() {
         vaultAddress={multisigVault.toBase58()}
         multisigPda={multisigCookie}
         vaultIndex={vaultIndex}
-        programId={programIdCookie!}
+        programId={programId.toBase58()}
       />
     </main>
   );

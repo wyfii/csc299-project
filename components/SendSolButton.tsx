@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { Send } from "lucide-react";
 import * as multisig from "nova-multisig-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, TransactionMessage, VersionedTransaction, clusterApiUrl } from "@solana/web3.js";
@@ -25,6 +26,7 @@ type SendSolProps = {
   multisigPda: string;
   vaultIndex: number;
   programId?: string;
+  asMenuItem?: boolean;
 };
 
 const SendSol = ({
@@ -32,6 +34,7 @@ const SendSol = ({
   multisigPda,
   vaultIndex,
   programId,
+  asMenuItem = false,
 }: SendSolProps) => {
   const wallet = useWallet();
   const walletModal = useWalletModal();
@@ -242,18 +245,40 @@ const SendSol = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button 
-          onClick={(e) => {
-            if (!wallet.publicKey) {
-              e.preventDefault()
-              walletModal.setVisible(true);
-              return;
-            }
-          }}
-          className="bg-white text-black hover:bg-gray-200 rounded-full px-4 py-1.5 text-xs font-medium transition-colors"
-        >
-          SEND
-        </Button>
+        {asMenuItem ? (
+          <button
+            onClick={(e) => {
+              if (!wallet.publicKey) {
+                e.preventDefault();
+                walletModal.setVisible(true);
+                return;
+              }
+            }}
+            className="
+              w-full px-4 py-2 text-left
+              font-button uppercase
+              text-gray-400 hover:text-orange-500 hover:bg-gray-900/50
+              transition-all duration-200
+              flex items-center gap-2
+            "
+          >
+            <Send className="w-3 h-3" />
+            Send
+          </button>
+        ) : (
+          <Button 
+            onClick={(e) => {
+              if (!wallet.publicKey) {
+                e.preventDefault();
+                walletModal.setVisible(true);
+                return;
+              }
+            }}
+            className="bg-white text-black hover:bg-gray-200 rounded-full px-4 py-1.5 text-xs font-medium transition-colors"
+          >
+            SEND
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

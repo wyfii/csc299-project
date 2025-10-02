@@ -31,14 +31,20 @@ export default function RenderMultisigRoute({
       
       {/* Only show main content when wallet is connected AND has multisig */}
       {connected && multisig && (
-        <div className="w-full space-y-2 p-3 pt-4 mt-1 md:space-y-4 md:p-8 md:pt-6 pb-24 bg-black text-white min-h-screen">
+        <div className="w-full space-y-2 p-3 pt-4 mt-1 md:space-y-4 md:p-8 md:pt-6 pb-24 bg-black text-white min-h-screen relative">
+          {/* Grain overlay for texture */}
+          <div className="grain-overlay" />
+          
           {children}
         </div>
       )}
       
       {/* If connected but no multisig, show empty state (onboarding will trigger) */}
       {connected && !multisig && pathname !== "/settings" && pathname !== "/create" && (
-        <div className="w-full p-8 bg-black text-white min-h-screen flex items-center justify-center">
+        <div className="w-full p-8 bg-black text-white min-h-screen flex items-center justify-center relative">
+          {/* Grain overlay for texture */}
+          <div className="grain-overlay" />
+          
           <div className="text-center">
             <h2 className="text-2xl font-bold text-white mb-4">No Multisig Found</h2>
             <p className="text-gray-400 mb-6">

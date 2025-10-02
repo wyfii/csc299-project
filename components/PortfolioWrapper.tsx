@@ -31,6 +31,9 @@ export function PortfolioWrapper({
         tokens={tokens}
         rpcUrl={rpcUrl}
         vaultAddress={vaultAddress}
+        vaultIndex={vaultIndex}
+        multisigPda={multisigPda}
+        programId={programId}
         onSolPriceChange={setSolPrice}
       />
 
