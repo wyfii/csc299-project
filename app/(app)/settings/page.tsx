@@ -31,7 +31,7 @@ const SettingsPage = async () => {
         <h1 className="text-3xl font-bold text-white uppercase tracking-wider mb-6">
           Settings
         </h1>
-        <div className="bg-gray-900/30 border border-gray-800 p-8 text-center"
+        <div className="bg-transparent border border-gray-800 p-8 text-center"
              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
           <p className="text-gray-400">No multisig found. Please create one first.</p>
         </div>
@@ -48,7 +48,7 @@ const SettingsPage = async () => {
         <h1 className="text-3xl font-bold text-white uppercase tracking-wider mb-6">
           Settings
         </h1>
-        <div className="bg-gray-900/30 border border-gray-800 p-8 text-center"
+        <div className="bg-transparent border border-gray-800 p-8 text-center"
              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
           <p className="text-gray-400">Invalid multisig address</p>
         </div>
@@ -76,7 +76,7 @@ const SettingsPage = async () => {
         <h1 className="text-3xl font-bold text-white uppercase tracking-wider mb-6">
           Settings
         </h1>
-        <div className="bg-gray-900/30 border border-gray-800 p-8 text-center"
+        <div className="bg-transparent border border-gray-800 p-8 text-center"
              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
           <p className="text-gray-400">
             Multisig not found at {multisigCookie}. Check the multisig address and try again.
@@ -103,7 +103,7 @@ const SettingsPage = async () => {
            style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
         <div className="absolute inset-0 bg-gray-800" />
         <div 
-          className="relative bg-gray-900/50 p-6"
+          className="relative bg-transparent p-6"
           style={{ clipPath: 'polygon(10px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 10px), calc(100% - 10px) calc(100% - 2px), 2px calc(100% - 2px), 2px 10px)' }}
         >
         <div className="flex items-start gap-4">
@@ -138,7 +138,7 @@ const SettingsPage = async () => {
            style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
         <div className="absolute inset-0 bg-gray-800" />
         <div 
-          className="relative bg-gray-900/50 overflow-hidden"
+          className="relative bg-transparent overflow-hidden"
           style={{ clipPath: 'polygon(10px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 10px), calc(100% - 10px) calc(100% - 2px), 2px calc(100% - 2px), 2px 10px)' }}
         >
         {/* Header */}
@@ -161,7 +161,7 @@ const SettingsPage = async () => {
           {multisigInfo.members.map((member, index) => (
             <div
               key={member.key.toBase58()}
-              className="flex items-center justify-between p-4 bg-black/50 border border-gray-800"
+              className="flex items-center justify-between p-4 bg-transparent border border-gray-800"
               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
             >
               <div className="flex items-center gap-4">

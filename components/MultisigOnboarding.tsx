@@ -529,8 +529,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           {members.length < 3 && (
             <motion.div
               whileTap={{ scale: 0.98 }}
-              className="relative p-[2px]"
-              style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+              className="relative p-[2px] overflow-hidden"
+              style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" style={{ opacity: 0.3 }} />
               <button
@@ -542,8 +542,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   text-trench-orange hover:text-orange-500
                   transition-all duration-200
                   flex items-center justify-center gap-2
+                  overflow-hidden
                 "
-                style={{ clipPath: 'polygon(4px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), 2px calc(100% - 2px), 2px 4px)' }}
+                style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
               >
                 <PlusCircleIcon className="w-4 h-4" />
                 Add Member
@@ -561,8 +562,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
         <div className="space-y-6" onLoad={() => checkUserBalance()}>
           {/* Balance warning if insufficient SOL */}
           {balanceChecked && userBalance < MULTISIG_CREATION_COST_SOL && !useNVAIPayment && (
-            <div className="bg-red-500/10 border border-red-500/30 p-4"
-                 style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+            <div className="bg-red-500/10 border border-red-500/30 p-4 overflow-hidden"
+                 style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
@@ -579,13 +580,13 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             {/* Standard SOL Payment */}
             <div
               className={`
-                p-6 border-2 cursor-pointer transition-all
+                p-6 border-2 cursor-pointer transition-all overflow-hidden
                 ${!useNVAIPayment 
                   ? 'bg-gray-900/80 border-trench-orange' 
                   : 'bg-gray-900/30 border-gray-800 hover:border-gray-700'
                 }
               `}
-              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+              style={{ clipPath: 'polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px)' }}
               onClick={() => {
                 setUseNVAIPayment(false);
                 checkUserBalance();
@@ -608,8 +609,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                   )}
                 </div>
                 {!useNVAIPayment && (
-                  <div className="w-6 h-6 bg-trench-orange flex items-center justify-center"
-                       style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
+                  <div className="w-6 h-6 bg-trench-orange flex items-center justify-center overflow-hidden"
+                       style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
                     <Check className="w-4 h-4 text-black" />
                   </div>
                 )}
@@ -635,8 +636,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       icon: Check,
       content: (
         <div className="space-y-4">
-          <div className="bg-gray-900/50 border border-gray-800 p-4"
-               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+          <div className="bg-gray-900/50 border border-gray-800 p-4 overflow-hidden"
+               style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-gray-500 uppercase tracking-wider">Members</span>
               <span className="text-xs text-white font-bold">{Array.from(new Set([publicKey?.toBase58(), ...members.map(m => m.address)])).length}</span>
@@ -661,8 +662,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
           </div>
 
-          <div className="bg-gray-900/50 border border-gray-800 p-4"
-               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+          <div className="bg-gray-900/50 border border-gray-800 p-4 overflow-hidden"
+               style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-500 uppercase tracking-wider">Threshold</span>
               <span className="text-sm text-white font-bold font-mono">
@@ -671,8 +672,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             </div>
           </div>
 
-          <div className="bg-gray-900/50 border border-gray-800 p-4"
-               style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+          <div className="bg-gray-900/50 border border-gray-800 p-4 overflow-hidden"
+               style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-500 uppercase tracking-wider">Payment</span>
               <span className="text-sm text-trench-orange font-bold font-mono">
@@ -698,7 +699,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           {/* Modal - Mobile responsive */}
           <div
             className="relative w-full max-w-2xl bg-black border-0 md:border border-gray-800 overflow-hidden my-0 md:my-8 min-h-screen md:min-h-0"
-            style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}
+            style={{ clipPath: 'polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px)' }}
           >
             {/* Decorative lines */}
             <div className="absolute top-0 right-0 w-[2px] h-20 bg-trench-orange/50" />
@@ -735,8 +736,8 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                     {step > 0 && (
                       <motion.div
                         whileTap={{ scale: 0.98 }}
-                        className="relative p-[2px] w-full sm:w-auto"
-                        style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+                        className="relative p-[2px] w-full sm:w-auto overflow-hidden"
+                        style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-trench-orange to-orange-500" />
                         <button
@@ -749,8 +750,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                             disabled:opacity-50 disabled:cursor-not-allowed
                             transition-all duration-200
                             flex items-center justify-center gap-2
+                            overflow-hidden
                           "
-                          style={{ clipPath: 'polygon(6px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 6px), calc(100% - 6px) calc(100% - 2px), 2px calc(100% - 2px), 2px 6px)' }}
+                          style={{ clipPath: 'polygon(8px 0, calc(100% - 2px) 0, calc(100% - 2px) calc(100% - 8px), calc(100% - 8px) calc(100% - 2px), 2px calc(100% - 2px), 2px 8px)' }}
                         >
                           <ArrowLeft className="w-4 h-4" />
                           <span>Back</span>
@@ -771,8 +773,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                           disabled:opacity-50 disabled:cursor-not-allowed
                           transition-all duration-200
                           flex items-center justify-center gap-2
+                          overflow-hidden
                         "
-                        style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+                        style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
                       >
                         <span>Continue</span>
                         <ArrowRight className="w-4 h-4" />
@@ -790,8 +793,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                           disabled:opacity-50 disabled:cursor-not-allowed
                           transition-all duration-200
                           flex items-center justify-center gap-2
+                          overflow-hidden
                         "
-                        style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+                        style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
                       >
                         {isCreating ? (
                           <>

@@ -4,7 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddress, createBurnInstruction } from "@solana/spl-token";
 import { Button } from "./ui/button";
-import { Flame, Sparkles, ArrowRight } from "lucide-react";
+import { Flame, Sparkles, ArrowRight, Check } from "lucide-react";
 import { HARDCODED_RPC_URL, HARDCODED_RPC_HEADERS } from "@/lib/utils";
 import { getNVAIPriceInSOL, calculateNVAIToBurn, NVAI_MINT_ADDRESS, MULTISIG_CREATION_COST_SOL } from "@/lib/getNVAIPrice";
 import { motion } from "framer-motion";
@@ -97,12 +97,13 @@ export default function NVAIBurnOption({ onSelect, selected }: NVAIBurnOptionPro
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`
-        p-6 rounded-xl border-2 cursor-pointer transition-all
+        relative p-6 border-2 cursor-pointer transition-all overflow-hidden
         ${selected 
-          ? 'bg-zinc-800/50 border-orange-500' 
-          : 'bg-zinc-800/30 border-zinc-700 hover:border-zinc-600'
+          ? 'bg-gray-900/80 border-trench-orange' 
+          : 'bg-gray-900/30 border-gray-800 hover:border-gray-700'
         }
       `}
+      style={{ clipPath: 'polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px)' }}
       onClick={() => hasEnoughNVAI && onSelect(true)}
     >
       {/* Premium Badge */}
@@ -111,7 +112,7 @@ export default function NVAIBurnOption({ onSelect, selected }: NVAIBurnOptionPro
         PREMIUM
       </div>
 
-      <div className="flex items-start gap-4">
+      <div className="flex items-center justify-between gap-4">
         {/* Token Images Side by Side */}
         <div className="relative flex-shrink-0">
           <div className="w-14 h-14">
@@ -177,6 +178,13 @@ export default function NVAIBurnOption({ onSelect, selected }: NVAIBurnOptionPro
             </div>
           )}
         </div>
+
+        {selected && (
+          <div className="w-6 h-6 bg-trench-orange flex items-center justify-center flex-shrink-0 overflow-hidden"
+               style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
+            <Check className="w-4 h-4 text-black" />
+          </div>
+        )}
       </div>
     </motion.div>
   );

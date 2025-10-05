@@ -202,40 +202,43 @@ export function TokenList({
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3, delay: 0.4 }}
           className="
-            group relative
-            bg-gray-900/30
-            border-l-2 border-orange-500/40
-            backdrop-blur-sm p-4
+            relative group
+            bg-transparent
+            border border-gray-800/50
+            backdrop-blur-sm px-5 py-4
             transition-all duration-200
-            hover:bg-gray-900/50 hover:border-orange-500
-          "
-          style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
-        >
-          {/* Asset Badge - Smaller */}
-          <div className="
-            absolute -left-3 top-4
-            w-10 h-10 flex items-center justify-center
-            bg-black border-2 border-orange-500
+            hover:bg-gray-900/30 hover:border-gray-600
             overflow-hidden
           "
-          style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
-            <Image 
-              src="/sol-logo.png" 
-              alt="SOL" 
-              width={24} 
-              height={24}
-              className="w-6 h-6 object-contain"
-            />
-          </div>
-
+          style={{ 
+            clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
+          }}
+        >
           {/* Content - Horizontal Layout */}
-          <div className="flex items-center justify-between ml-7">
+          <div className="flex items-center justify-between gap-4">
+            {/* Token Icon and Info */}
             <div className="flex items-center gap-4">
-              <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">SOL</span>
-              <span className="font-mono text-lg font-bold text-white">
+              {/* SOL Icon */}
+              <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+                <Image 
+                  src="/sol-logo.png" 
+                  alt="SOL" 
+                  width={32} 
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+              
+              {/* Token Symbol */}
+              <span className="text-sm text-gray-400 uppercase tracking-wider font-semibold min-w-[60px]">SOL</span>
+              
+              {/* Token Amount */}
+              <span className="font-mono text-base font-semibold text-white">
                 {formatTokenAmount(solAmount)}
               </span>
-              <span className="text-sm text-gray-500">
+              
+              {/* USD Value */}
+              <span className="text-sm text-gray-500 min-w-[80px]">
                 {formatUSDValue(solValue)}
               </span>
             </div>
@@ -304,45 +307,42 @@ export function TokenList({
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.5 + (index * 0.05) }}
               className="
-                group relative
-                bg-gray-900/20
-                border-l-2 border-gray-700/40
-                backdrop-blur-sm p-4
+                relative group
+                bg-transparent
+                border border-gray-800/50
+                backdrop-blur-sm px-5 py-4
                 transition-all duration-200
-                hover:bg-gray-900/40 hover:border-gray-600
-              "
-              style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
-            >
-              {/* Token Badge - Smaller */}
-              <div className="
-                absolute -left-3 top-4
-                w-10 h-10 flex items-center justify-center
-                bg-black border-2 border-gray-700
-                group-hover:border-gray-600
-                transition-all duration-200
+                hover:bg-gray-900/30 hover:border-gray-600
                 overflow-hidden
               "
-              style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
-                {!hasImageError && tokenImageUrl ? (
-                  <Image 
-                    src={tokenImageUrl}
-                    alt={tokenSymbol || shortMint}
-                    width={24}
-                    height={24}
-                    className="w-6 h-6 object-contain"
-                    onError={() => handleImageError(mintAddress)}
-                    unoptimized={tokenImageUrl.startsWith('http')}
-                  />
-                ) : (
-                  <Coins className="w-5 h-5 text-gray-500 group-hover:text-gray-400" />
-                )}
-              </div>
-
+              style={{ 
+                clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
+              }}
+            >
               {/* Content - Horizontal Layout */}
-              <div className="flex items-center justify-between ml-7">
+              <div className="flex items-center justify-between gap-4">
+                {/* Token Icon and Info */}
                 <div className="flex items-center gap-4">
+                  {/* Token Icon */}
+                  <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+                    {!hasImageError && tokenImageUrl ? (
+                      <Image 
+                        src={tokenImageUrl}
+                        alt={tokenSymbol || shortMint}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 object-contain"
+                        onError={() => handleImageError(mintAddress)}
+                        unoptimized={tokenImageUrl.startsWith('http')}
+                      />
+                    ) : (
+                      <Coins className="w-7 h-7 text-gray-500 group-hover:text-gray-400" />
+                    )}
+                  </div>
+                  
+                  {/* Token Symbol */}
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">
+                    <span className="text-sm text-gray-400 uppercase tracking-wider font-semibold min-w-[60px]">
                       {tokenSymbol || 'Token'}
                     </span>
                     <motion.button
@@ -353,10 +353,14 @@ export function TokenList({
                       <Copy className="w-3 h-3" />
                     </motion.button>
                   </div>
-                  <span className="font-mono text-lg font-bold text-white">
+                  
+                  {/* Token Amount */}
+                  <span className="font-mono text-base font-semibold text-white">
                     {formatTokenAmount(amount)}
                   </span>
-                  <span className="text-sm text-gray-500">
+                  
+                  {/* USD Value */}
+                  <span className="text-sm text-gray-500 min-w-[80px]">
                     {price > 0 ? formatUSDValue(usdValue) : '$0.00'}
                   </span>
                 </div>
