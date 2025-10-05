@@ -18,10 +18,13 @@ const SettingsPage = async () => {
     httpHeaders: HARDCODED_RPC_HEADERS,
   } as any);
   
-  // Get wallet address and query Firestore for multisig
+  // Get wallet address and optionally selected multisig from headers
   const walletAddress = headers().get("x-wallet");
+  const selectedMultisig = headers().get("x-multisig");
   let multisigCookie: string | null = null;
-  if (walletAddress) {
+  if (selectedMultisig) {
+    multisigCookie = selectedMultisig;
+  } else if (walletAddress) {
     multisigCookie = await getMultisigFromFirestore(walletAddress);
   }
   

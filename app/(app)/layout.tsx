@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PublicKey } from "@solana/web3.js";
 import { Toaster } from "@/components/ui/sonner";
 import ConnectWallet from "@/components/ConnectWalletButton";
+import MultisigSelector from "@/components/MultisigSelector";
 import {
   LucideHome,
   ArrowDownUp,
@@ -39,10 +40,13 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
 
   const path = headersList.get("x-pathname");
   
-  // Get wallet address and query Firestore for multisig
+  // Get wallet address and optionally selected multisig from headers
   const walletAddress = headersList.get("x-wallet");
+  const selectedMultisig = headersList.get("x-multisig");
   let multisigCookie: string | null = null;
-  if (walletAddress) {
+  if (selectedMultisig) {
+    multisigCookie = selectedMultisig;
+  } else if (walletAddress) {
     multisigCookie = await getMultisigFromFirestore(walletAddress);
   }
   
@@ -107,7 +111,10 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
               </ul>
             </div>
 
-            <ConnectWallet />
+            <div className="px-4 pb-4 space-y-3">
+              <MultisigSelector />
+              <ConnectWallet />
+            </div>
             </div>
           </div>
         </aside>

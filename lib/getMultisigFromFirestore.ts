@@ -40,6 +40,7 @@ export async function getMultisigFromFirestore(walletAddress: string): Promise<s
     
     // Extract multi-sig address from the document name
     // Document name format: "projects/{project}/databases/(default)/documents/users/{wallet}/multisigs/{multi-sig}"
+    // Choose first document by default. Server routes may override via x-multisig
     const documentName = data.documents[0].name;
     const multisigAddress = documentName.split('/').pop();
     

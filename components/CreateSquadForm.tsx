@@ -25,6 +25,8 @@ import { isPublickey } from "@/lib/isPublickey";
 import { ValidationRules, useSquadForm } from "@/lib/hooks/useSquadForm";
 import { useUserOnboarding } from "@/lib/hooks/useUserOnboarding";
 import Link from "next/link";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface MemberAddresses {
   count: number;
@@ -37,6 +39,7 @@ interface CreateSquadFormData {
   rentCollector: string;
   configAuthority: string;
   createKey: string;
+  name?: string;
 }
 
 export default function CreateSquadForm({
@@ -62,6 +65,7 @@ export default function CreateSquadForm({
       rentCollector: "",
       configAuthority: "",
       createKey: "",
+      name: "",
       members: {
         count: 0,
         memberData: [],
@@ -113,6 +117,32 @@ export default function CreateSquadForm({
       // Mark user as having created their first multisig
       await markMultisigCreated();
 
+      // Save record to Firestore with optional name (client path mirrors onboarding)
+      try {
+        const userRef = doc(db, "users", publicKey!.toBase58());
+        await setDoc(
+          userRef,
+          { hasCreatedMultisig: true, lastLogin: serverTimestamp() },
+          { merge: true }
+        );
+        const multisigRef = doc(db, "users", publicKey!.toBase58(), "multisigs", multisig.toBase58());
+        await setDoc(
+          multisigRef,
+          {
+            address: multisig.toBase58(),
+            members: formState.values.members.memberData.map((m: Member) => m.key!.toBase58()),
+            threshold: formState.values.threshold,
+            createdAt: serverTimestamp(),
+            createdBy: publicKey!.toBase58(),
+            isActive: true,
+            name: (formState.values.name || "").trim() || null,
+          },
+          { merge: true }
+        );
+      } catch (e) {
+        console.error("Failed to save multisig to Firestore:", e);
+      }
+
       return { signature, multisig: multisig.toBase58() };
     } catch (error: any) {
       console.error(error);
@@ -126,6 +156,16 @@ export default function CreateSquadForm({
   return (
     <>
       <div className="grid grid-cols-8 gap-4 mb-6">
+        <div className="col-span-8 flex-col space-y-2">
+          <label htmlFor="name" className="font-medium">Name</label>
+          <Input
+            type="text"
+            placeholder="e.g. Marketing Vault"
+            value={formState.values.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            className="bg-zinc-800/50"
+          />
+        </div>
         <div className="col-span-6 flex-col space-y-2">
           <label htmlFor="members" className="font-medium">
             Members <span className="text-red-600">*</span>

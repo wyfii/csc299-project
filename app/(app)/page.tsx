@@ -18,12 +18,15 @@ export default async function Home() {
     httpHeaders: HARDCODED_RPC_HEADERS,
   } as any);
 
-  // Get wallet address from header (set by middleware from cookie)
+  // Get wallet address and optionally selected multisig from headers (set by middleware)
   const walletAddress = headers().get("x-wallet");
+  const selectedMultisig = headers().get("x-multisig");
   
-  // Fetch multisig from Firestore using wallet address
+  // Determine active multisig: prefer explicitly selected, else Firestore default
   let multisigCookie: string | null = null;
-  if (walletAddress) {
+  if (selectedMultisig) {
+    multisigCookie = selectedMultisig;
+  } else if (walletAddress) {
     multisigCookie = await getMultisigFromFirestore(walletAddress);
   }
   

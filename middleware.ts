@@ -21,6 +21,12 @@ export async function middleware(req: NextRequest) {
     requestHeaders.set("x-vault-index", vaultIndex);
   }
 
+  // Propagate selected multisig from cookie to header
+  const selectedMultisig = req.cookies.get("x-multisig")?.value;
+  if (selectedMultisig) {
+    requestHeaders.set("x-multisig", selectedMultisig);
+  }
+
   return NextResponse.next({
     request: {
       headers: requestHeaders,

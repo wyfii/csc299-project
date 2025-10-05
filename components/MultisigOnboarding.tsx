@@ -37,6 +37,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
   const [members, setMembers] = useState<MemberData[]>([
     { address: publicKey?.toBase58() || "", isValid: !!publicKey },
   ]);
+  const [multisigName, setMultisigName] = useState<string>("");
   const [isCreating, setIsCreating] = useState(false);
   const [useNVAIPayment, setUseNVAIPayment] = useState(false);
   const [userBalance, setUserBalance] = useState<number>(0);
@@ -417,6 +418,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           createdAt: serverTimestamp(),
           createdBy: publicKey.toBase58(),
           isActive: true,
+          name: multisigName.trim() || null,
         });
         console.log("✅ Multi-sig saved to subcollection!");
       } catch (fbError: any) {
@@ -455,9 +457,15 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       subtitle: "Add members to your wallet",
       icon: Users,
       content: (
-        <div className="flex flex-col items-center justify-center py-12">
-          {/* Empty content - just showing title and subtitle */}
-            </div>
+        <div className="space-y-4 py-4">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Name (optional)</label>
+          <Input
+            value={multisigName}
+            onChange={(e) => setMultisigName(e.target.value)}
+            placeholder="e.g. Marketing Vault"
+            className="bg-gray-900 border-gray-800"
+          />
+        </div>
       ),
     },
     {
