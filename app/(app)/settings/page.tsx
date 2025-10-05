@@ -7,7 +7,6 @@ import * as multisig from "nova-multisig-sdk";
 import { headers } from "next/headers";
 import { getMultisigFromFirestore } from "@/lib/getMultisigFromFirestore";
 import { Users, Shield, UserMinus } from "lucide-react";
-import AdminPayoutPanel from "@/components/AdminPayoutPanel";
 
 // Add caching to reduce RPC calls
 export const revalidate = 30; // Cache for 30 seconds
@@ -90,19 +89,6 @@ const SettingsPage = async () => {
     );
   }
 
-  // Compute vault balance to show payout affordability
-  const vaultAddress = multisig.getVaultPda({
-    multisigPda,
-    index: vaultIndex,
-    programId,
-  })[0];
-
-  let vaultBalanceLamports = 0;
-  try {
-    vaultBalanceLamports = await connection.getBalance(vaultAddress);
-  } catch {}
-  const vaultBalanceSOL = vaultBalanceLamports / 1_000_000_000;
-
   return (
     <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
       {/* Header */}
@@ -149,15 +135,6 @@ const SettingsPage = async () => {
         </div>
         </div>
       </div>
-
-      {/* Admin Payouts */}
-      <AdminPayoutPanel
-        members={multisigInfo.members.map((m) => m.key.toBase58())}
-        multisigPda={multisigCookie!}
-        vaultIndex={vaultIndex}
-        programId={programId.toBase58()}
-        vaultBalanceSOL={vaultBalanceSOL}
-      />
 
       {/* Members Section */}
       <div className="relative p-[2px]"
