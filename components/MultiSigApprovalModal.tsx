@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, Clock, Wallet, ArrowRight, Users, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { useApprovalContext } from "@/lib/hooks/useApprovalContext";
 
 type Member = {
   address: string;
@@ -41,6 +42,7 @@ export default function MultiSigApprovalModal({
   const wallet = useWallet();
   const walletModal = useWalletModal();
   const { publicKey, disconnect } = wallet;
+  const { setApprovalFlow, clearApprovalFlow } = useApprovalContext();
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -123,13 +125,24 @@ export default function MultiSigApprovalModal({
     }
   }, [isOpen, multisigPda, transactionIndex, programId, connection, publicKey]);
 
-  // Only load when modal first opens
+  // Set approval context when modal opens/closes
   useEffect(() => {
     if (isOpen) {
-      console.log("📂 Modal opened - loading approval status");
+      console.log("📂 Modal opened - setting approval context and loading status");
+      setApprovalFlow(true, multisigPda);
       loadApprovalStatus();
+    } else {
+      console.log("📂 Modal closed - clearing approval context");
+      clearApprovalFlow();
     }
-  }, [isOpen, loadApprovalStatus]);
+    
+    // Cleanup on unmount
+    return () => {
+      if (isOpen) {
+        clearApprovalFlow();
+      }
+    };
+  }, [isOpen, multisigPda, setApprovalFlow, clearApprovalFlow, loadApprovalStatus]);
 
   const handleSwitchWallet = async (targetAddress: string) => {
     try {

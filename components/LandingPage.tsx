@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { Wallet } from "lucide-react";
 import MultisigOnboarding from "./MultisigOnboarding";
 import { useUserOnboarding } from "@/lib/hooks/useUserOnboarding";
+import { useApprovalContext } from "@/lib/hooks/useApprovalContext";
 import { trackPageView, trackUserAction } from "@/lib/analytics";
 import Image from "next/image";
 
@@ -16,6 +17,7 @@ export default function LandingPage() {
   const walletModal = useWalletModal();
   const router = useRouter();
   const { isNewUser, isLoading } = useUserOnboarding();
+  const { isInApprovalFlow } = useApprovalContext();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isCreatingMultisig, setIsCreatingMultisig] = useState(false);
 
@@ -25,19 +27,23 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    // Only show onboarding for NEW users who haven't created a multi-sig
-    console.log("LandingPage state:", { connected, isLoading, isNewUser, showOnboarding });
+    // Only show onboarding for NEW users who haven't created a multi-sig AND are not in approval flow
+    console.log("LandingPage state:", { connected, isLoading, isNewUser, showOnboarding, isInApprovalFlow });
     
     if (connected && !isLoading) {
-      if (isNewUser === true) {
+      // Never show onboarding during approval flows - wallet switching should be seamless
+      if (isInApprovalFlow) {
+        console.log("🔄 In approval flow - hiding onboarding to allow seamless wallet switching");
+        setShowOnboarding(false);
+      } else if (isNewUser === true) {
         console.log("📋 New user (no multi-sig) - showing onboarding");
         setShowOnboarding(true);
       } else if (isNewUser === false) {
-        console.log("✅ Existing user (has multi-sig) - hiding onboarding");
+        console.log("✅ Existing user (has multi-sig or is member) - hiding onboarding");
         setShowOnboarding(false);
       }
     }
-  }, [connected, isLoading, isNewUser]);
+  }, [connected, isLoading, isNewUser, isInApprovalFlow]);
 
   const handleOnboardingComplete = async () => {
     setShowOnboarding(false);

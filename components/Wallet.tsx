@@ -15,6 +15,7 @@ import { Coin98WalletAdapter } from "@solana/wallet-adapter-coin98";
 // import { StandardWalletAdapter } from "@solana/wallet-standard-wallet-adapter";
 import { HARDCODED_RPC_URL } from "@/lib/utils";
 import { trackWalletConnected, trackError } from "@/lib/analytics";
+import { ApprovalProvider } from "@/lib/hooks/useApprovalContext";
 
 require("@solana/wallet-adapter-react-ui/styles.css");
 
@@ -49,7 +50,11 @@ export const Wallet: FC<Props> = ({ children }) => {
         }}
       >
         <WalletConnectionTracker />
-        <WalletModalProvider>{children}</WalletModalProvider>
+        <WalletModalProvider>
+          <ApprovalProvider>
+            {children}
+          </ApprovalProvider>
+        </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );

@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { checkWalletMultisigMembership } from "@/lib/checkWalletMembership";
+import { useApprovalContext } from "@/lib/hooks/useApprovalContext";
 
 interface UserData {
   walletAddress: string;
@@ -13,6 +15,7 @@ interface UserData {
 
 export function useUserOnboarding() {
   const { publicKey, connected } = useWallet();
+  const { isInApprovalFlow, currentMultisigPda } = useApprovalContext();
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -38,8 +41,22 @@ export function useUserOnboarding() {
       try {
         const walletAddress = publicKey.toBase58();
         console.log("useUserOnboarding: Checking user status for", walletAddress);
+
+        // If we're in an approval flow, check if this wallet is a member of the current multisig
+        if (isInApprovalFlow && currentMultisigPda) {
+          console.log("🔄 In approval flow - checking membership of current multisig");
+          const { isWalletMemberOfMultisig } = await import("@/lib/checkWalletMembership");
+          const isMemberOfCurrentMultisig = await isWalletMemberOfMultisig(walletAddress, currentMultisigPda);
+          
+          if (isMemberOfCurrentMultisig) {
+            console.log("✅ Wallet is member of current multisig - no onboarding during approval");
+            setIsNewUser(false);
+            setIsLoading(false);
+            return;
+          }
+        }
         
-        // Check if user actually has multisigs in Firestore (source of truth)
+        // Check if user actually has multisigs in Firestore (they created)
         const multisigsResponse = await fetch(
           `https://firestore.googleapis.com/v1/projects/nova-a42e0/databases/(default)/documents/users/${walletAddress}/multisigs?key=AIzaSyCZsi5RaDwItGNf_KPee_2d9EsNJDtLsDI`
         );
@@ -49,14 +66,20 @@ export function useUserOnboarding() {
         
         console.log("useUserOnboarding: Has multi-sig in Firestore?", hasMultisigInFirestore);
 
-        if (hasMultisigInFirestore) {
-          // User has multi-sig - don't show onboarding
-          console.log("useUserOnboarding: User HAS multi-sig - no onboarding needed");
+        // Also check if wallet is a member of any multisig on blockchain
+        const membershipCheck = await checkWalletMultisigMembership(walletAddress);
+        console.log("useUserOnboarding: Membership check result:", membershipCheck);
+
+        const isExistingUser = hasMultisigInFirestore || membershipCheck.isMember;
+
+        if (isExistingUser) {
+          // User has multi-sig or is member of one - don't show onboarding
+          console.log("useUserOnboarding: User HAS multi-sig or is member - no onboarding needed");
           setIsNewUser(false);
           localStorage.setItem(`nova-user-${walletAddress}`, "true");
         } else {
-          // User has NO multi-sig - show onboarding
-          console.log("useUserOnboarding: User has NO multi-sig - showing onboarding");
+          // User has NO multi-sig and is not a member - show onboarding
+          console.log("useUserOnboarding: User has NO multi-sig and not a member - showing onboarding");
           setIsNewUser(true);
           localStorage.removeItem(`nova-user-${walletAddress}`);
         }
@@ -86,8 +109,14 @@ export function useUserOnboarding() {
         }
       } catch (error) {
         console.error("useUserOnboarding: Error checking user status:", error);
-        // On error, assume new user to be safe
-        setIsNewUser(true);
+        // On error, if we're in approval flow, assume existing user to prevent interruption
+        if (isInApprovalFlow) {
+          console.log("⚠️ Error during approval flow - assuming existing user to prevent interruption");
+          setIsNewUser(false);
+        } else {
+          // Otherwise assume new user to be safe
+          setIsNewUser(true);
+        }
       } finally {
         setIsLoading(false);
         console.log("useUserOnboarding: Finished loading");
@@ -95,7 +124,7 @@ export function useUserOnboarding() {
     }
 
     checkUserStatus();
-  }, [connected, publicKey]);
+  }, [connected, publicKey, isInApprovalFlow, currentMultisigPda]);
 
   const markMultisigCreated = async () => {
     if (!publicKey) return;
