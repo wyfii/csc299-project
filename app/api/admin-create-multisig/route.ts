@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Connect to network
     const connection = new Connection(
-      process.env.NEXT_PUBLIC_RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=bdafb51b-3059-4f6e-a2a3-5b4669dc5937',
+      process.env.NEXT_PUBLIC_RPC_URL || 'http://staging.oobeprotocol.ai:8080/rpc?api_key=sk_test_d9ae23e373954730ad6bb176dd637944',
       'confirmed'
     );
 
