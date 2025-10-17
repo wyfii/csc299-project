@@ -3,7 +3,7 @@ import { Connection, Keypair, Transaction, PublicKey } from '@solana/web3.js';
 import * as multisig from 'nova-multisig-sdk';
 import bs58 from 'bs58';
 
-// API route for admin to create multisig after user burns NVAI
+// API route for admin operations if needed
 export async function POST(request: NextRequest) {
   try {
     const { multisigPda, createKeySecret, members, threshold, userWallet, programId, dryRun } = await request.json();

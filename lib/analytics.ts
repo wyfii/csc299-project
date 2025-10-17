@@ -14,7 +14,7 @@ export const trackEvent = (eventName: string, parameters?: Record<string, any>) 
 };
 
 // Common events
-export const trackMultisigCreated = (method: 'SOL' | 'NVAI', memberCount: number) => {
+export const trackMultisigCreated = (method: 'SOL', memberCount: number) => {
   trackEvent('multisig_created', {
     method,
     member_count: memberCount,

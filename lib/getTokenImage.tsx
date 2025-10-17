@@ -2,11 +2,6 @@ import Image from "next/image";
 
 // Known token metadata
 const KNOWN_TOKENS: { [mint: string]: { symbol: string; logo: string } } = {
-  // NVAI token - use Nova logo
-  "3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin": {
-    symbol: "NVAI",
-    logo: "/logo.png",
-  },
   // SOL
   "So11111111111111111111111111111111111111112": {
     symbol: "SOL",
@@ -41,19 +36,6 @@ export function getTokenSymbol(mintAddress: string): string | null {
 
 // Original function for backwards compatibility
 export function getTokenImage(mintAddress: string, size: number = 32) {
-  // NVAI token - use Nova logo
-  if (mintAddress === "3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin") {
-    return (
-      <Image
-        src="/logo.png"
-        alt="NVAI"
-        width={size}
-        height={size}
-        className="rounded-full"
-      />
-    );
-  }
-
   // SOL token
   if (mintAddress === "So11111111111111111111111111111111111111112" || mintAddress === "SOL") {
     return (
@@ -78,6 +60,5 @@ export function getTokenImage(mintAddress: string, size: number = 32) {
   );
 }
 
-export const NVAI_MINT = "3SkFJRqMPTKZLqKK1MmY2mvAm711FGAtJ9ZbL6r1coin";
 export const SOL_MINT = "So11111111111111111111111111111111111111112";
 

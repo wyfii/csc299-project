@@ -12,9 +12,8 @@ import { motion } from "framer-motion";
 import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import * as multisig from "nova-multisig-sdk";
-import NVAIBurnOption from "./NVAIBurnOption";
 import { getTokenImage } from "@/lib/getTokenImage";
-import { MULTISIG_CREATION_COST_SOL, getNVAIPriceInSOL, calculateNVAIToBurn } from "@/lib/getNVAIPrice";
+import { MULTISIG_CREATION_COST_SOL } from "@/lib/multisigCost";
 import { trackMultisigCreated, trackUserAction, trackError } from "@/lib/analytics";
 import Image from "next/image";
 
@@ -39,7 +38,6 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
   ]);
   const [multisigName, setMultisigName] = useState<string>("");
   const [isCreating, setIsCreating] = useState(false);
-  const [useNVAIPayment, setUseNVAIPayment] = useState(false);
   const [userBalance, setUserBalance] = useState<number>(0);
   const [balanceChecked, setBalanceChecked] = useState(false);
 
@@ -112,10 +110,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
   const createMultisigWallet = async () => {
     if (!publicKey || !canProceedToCreation) return;
 
-    // Check if user has enough SOL (only if not using NVAI payment)
-    if (!useNVAIPayment && userBalance < MULTISIG_CREATION_COST_SOL) {
+    // Check if user has enough SOL
+    if (userBalance < MULTISIG_CREATION_COST_SOL) {
       toast.error(
-        `Insufficient SOL. You need ${MULTISIG_CREATION_COST_SOL} SOL but only have ${userBalance.toFixed(4)} SOL. Please add more SOL to your wallet or use NVAI payment.`,
+        `Insufficient SOL. You need ${MULTISIG_CREATION_COST_SOL} SOL but only have ${userBalance.toFixed(4)} SOL. Please add more SOL to your wallet.`,
         { duration: 8000 }
       );
       return;
@@ -150,202 +148,6 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       const createKey = Keypair.generate();
       const totalMembers = allMembers.length;
       const threshold = totalMembers; // All members must approve
-
-      if (useNVAIPayment) {
-        // NVAI Burn flow - VALIDATE FIRST, then burn
-        toast.loading("🔍 Validating multi-sig creation...", { id: "create-multisig" });
-        
-        // Calculate NVAI to burn
-        const nvaiPrice = await getNVAIPriceInSOL();
-        const nvaiToBurn = calculateNVAIToBurn(MULTISIG_CREATION_COST_SOL, nvaiPrice);
-        
-        console.log("💰 NVAI Payment Details:", {
-          nvaiPrice,
-          solCost: MULTISIG_CREATION_COST_SOL,
-          nvaiToBurn,
-        });
-
-        // Create multisig instruction first (to validate)
-        const multisigPda = multisig.getMultisigPda({
-          createKey: createKey.publicKey,
-          programId: new PublicKey(OFFICIAL_PROGRAM_ID),
-        })[0];
-
-        const [programConfig] = multisig.getProgramConfigPda({
-          programId: new PublicKey(OFFICIAL_PROGRAM_ID),
-        });
-
-        const programConfigInfo = await multisig.accounts.ProgramConfig.fromAccountAddress(
-          connection,
-          programConfig
-        );
-
-        const configTreasury = programConfigInfo.treasury;
-
-        // Create multisig instruction
-        const multisigIx = multisig.instructions.multisigCreateV2({
-          multisigPda: multisigPda,
-          createKey: createKey.publicKey,
-          creator: publicKey, // User is creator
-          members: allMembers as any,
-          threshold: threshold,
-          configAuthority: null,
-          treasury: configTreasury,
-          rentCollector: null,
-          timeLock: 0,
-          programId: new PublicKey(OFFICIAL_PROGRAM_ID),
-        });
-
-        console.log('✅ Multisig instruction prepared');
-        // Testing admin API availability
-        
-        // Test admin API first (before burning NVAI)
-        const testResponse = await fetch('/api/admin-create-multisig', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            multisigPda: multisigPda.toBase58(),
-            createKeyPublic: createKey.publicKey.toBase58(),
-            createKeySecret: Array.from(createKey.secretKey),
-            members: allMembers.map(m => ({
-              key: m.key!.toBase58(),
-              permissions: m.permissions,
-            })),
-            threshold: threshold,
-            userWallet: publicKey.toBase58(),
-            programId: OFFICIAL_PROGRAM_ID,
-            dryRun: true, // Test mode
-          }),
-        });
-
-        if (!testResponse.ok) {
-          const errorData = await testResponse.json().catch(() => ({ error: 'Unknown error' }));
-          console.error('❌ Admin API Test Failed:', errorData);
-          throw new Error(`Cannot create multisig: ${errorData.error || 'Admin API unavailable'}`);
-        }
-        
-        // Admin API is ready
-        console.log('🔥 Now burning NVAI (safe to proceed)...');
-        
-        // Import burn modules
-        const { getAssociatedTokenAddress, createBurnCheckedInstruction, TOKEN_PROGRAM_ID } = await import("@solana/spl-token");
-        const { NVAI_MINT_ADDRESS, NVAI_DECIMALS } = await import("@/lib/getNVAIPrice");
-        
-        toast.loading("🔥 Burning NVAI...", { id: "create-multisig" });
-        
-        // Get user's NVAI token account
-        const nvaiATA = await getAssociatedTokenAddress(
-          new PublicKey(NVAI_MINT_ADDRESS),
-          publicKey
-        );
-        
-        // Calculate burn amount
-        const burnAmount = BigInt(Math.round(nvaiToBurn * 10 ** NVAI_DECIMALS));
-        
-        // Create burn instruction
-        const burnIx = createBurnCheckedInstruction(
-          nvaiATA,
-          new PublicKey(NVAI_MINT_ADDRESS),
-          publicKey,
-          burnAmount,
-          NVAI_DECIMALS,
-          [],
-          TOKEN_PROGRAM_ID
-        );
-
-        // User signs burn transaction
-        const burnTx = new Transaction().add(burnIx);
-        burnTx.feePayer = publicKey;
-        burnTx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-
-        toast.loading("Please approve NVAI burn in your wallet...", { id: "create-multisig" });
-        
-        const burnSig = await sendTransaction(burnTx, connection);
-        
-        toast.loading("Confirming NVAI burn...", { id: "create-multisig" });
-        await connection.confirmTransaction(burnSig, "confirmed");
-        
-        // NVAI burned successfully
-        
-        // NOW call admin API for real
-        toast.loading("Creating your multi-sig...", { id: "create-multisig" });
-        // Calling admin API to create multi-sig
-        
-        const adminResponse = await fetch('/api/admin-create-multisig', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            multisigPda: multisigPda.toBase58(),
-            createKeyPublic: createKey.publicKey.toBase58(),
-            createKeySecret: Array.from(createKey.secretKey),
-            members: allMembers.map(m => ({
-              key: m.key!.toBase58(),
-              permissions: m.permissions,
-            })),
-            threshold: threshold,
-            userWallet: publicKey.toBase58(),
-            programId: OFFICIAL_PROGRAM_ID,
-            dryRun: false, // Real creation
-          }),
-        });
-
-        if (!adminResponse.ok) {
-          const errorData = await adminResponse.json().catch(() => ({ error: 'Unknown error' }));
-          console.error('❌ Admin API Error:', errorData);
-          throw new Error(`Admin API failed: ${errorData.error || 'Unknown error'}`);
-        }
-
-        const { signature } = await adminResponse.json();
-        // Multisig created by admin successfully
-        
-        const newMultisigAddress = multisigPda.toBase58();
-        
-        toast.success(
-          <div className="flex flex-col gap-1">
-            <span>Multisig created successfully! 🎉</span>
-            <a 
-              href={`https://solscan.io/tx/${signature}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-orange-400 hover:text-orange-300 underline text-xs"
-            >
-              View creation tx on Solscan →
-            </a>
-          </div>,
-          { id: "create-multisig", duration: 10000 }
-        );
-        
-        // Continue with Firestore save... (same as SOL flow)
-        const userRef = doc(db, "users", publicKey.toBase58());
-        await setDoc(userRef, {
-          hasCreatedMultisig: true,
-          lastLogin: serverTimestamp(),
-        }, { merge: true });
-
-        const multisigRef = doc(db, "users", publicKey.toBase58(), "multisigs", multisigPda.toBase58());
-        await setDoc(multisigRef, {
-          address: multisigPda.toBase58(),
-          members: allMembers.map(m => m.key!.toBase58()),
-          threshold: threshold,
-          createdAt: serverTimestamp(),
-          createdBy: publicKey.toBase58(),
-          paymentMethod: "NVAI_BURN",
-        });
-
-        localStorage.setItem(`nova-user-${publicKey.toBase58()}`, "true");
-        
-        // Track successful multisig creation
-        trackMultisigCreated('NVAI', members.length);
-        trackUserAction('multisig_creation_success', { method: 'NVAI', memberCount: members.length });
-        
-        toast.success("✅ Multi-sig created with NVAI burn!", { id: "create-multisig", duration: 3000 });
-        
-        // Wait a moment for everything to propagate
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        onComplete();
-        return;
-      }
 
       // Standard SOL payment flow
       toast.loading("Creating your multi-sig...", { id: "create-multisig" });
@@ -442,7 +244,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       trackError('multisig_creation_failed', error.message, 'MultisigOnboarding');
       trackUserAction('multisig_creation_error', { 
         error: error.message, 
-        method: useNVAIPayment ? 'NVAI' : 'SOL',
+        method: 'SOL',
         memberCount: members.length 
       });
       
@@ -569,7 +371,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
       content: (
         <div className="space-y-6" onLoad={() => checkUserBalance()}>
           {/* Balance warning if insufficient SOL */}
-          {balanceChecked && userBalance < MULTISIG_CREATION_COST_SOL && !useNVAIPayment && (
+          {balanceChecked && userBalance < MULTISIG_CREATION_COST_SOL && (
             <div className="bg-red-500/10 border border-red-500/30 p-4 overflow-hidden"
                  style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}>
               <div className="flex items-start gap-3">
@@ -577,7 +379,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                 <div className="flex-1">
                   <p className="text-sm text-red-300 font-medium">Insufficient SOL Balance</p>
                   <p className="text-xs text-red-400 mt-1">
-                    You have {userBalance.toFixed(4)} SOL but need {MULTISIG_CREATION_COST_SOL} SOL. Please add more SOL or use NVAI payment.
+                    You have {userBalance.toFixed(4)} SOL but need {MULTISIG_CREATION_COST_SOL} SOL. Please add more SOL to your wallet.
                   </p>
                 </div>
               </div>
@@ -585,20 +387,10 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
           )}
 
           <div className="space-y-4">
-            {/* Standard SOL Payment */}
+            {/* SOL Payment - Only option */}
             <div
-              className={`
-                p-6 border-2 cursor-pointer transition-all overflow-hidden
-                ${!useNVAIPayment 
-                  ? 'bg-gray-900/80 border-trench-orange' 
-                  : 'bg-gray-900/30 border-gray-800 hover:border-gray-700'
-                }
-              `}
+              className="p-6 border-2 bg-gray-900/80 border-trench-orange transition-all overflow-hidden"
               style={{ clipPath: 'polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px)' }}
-              onClick={() => {
-                setUseNVAIPayment(false);
-                checkUserBalance();
-              }}
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12">
@@ -606,9 +398,9 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-wider">Pay with SOL</h3>
-                  <p className="text-xs text-gray-400">Standard payment method</p>
+                  <p className="text-xs text-gray-400">Multisig creation fee</p>
                   <p className="text-sm text-white mt-2 font-mono">
-                    Cost: <span className="font-bold text-trench-orange">~{MULTISIG_CREATION_COST_SOL} SOL</span>
+                    Cost: <span className="font-bold text-trench-orange">{MULTISIG_CREATION_COST_SOL} SOL</span>
                   </p>
                   {balanceChecked && (
                     <p className="text-xs text-gray-500 mt-1 font-mono">
@@ -616,23 +408,12 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
                     </p>
                   )}
                 </div>
-                {!useNVAIPayment && (
-                  <div className="w-6 h-6 bg-trench-orange flex items-center justify-center overflow-hidden"
-                       style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
-                    <Check className="w-4 h-4 text-black" />
-                  </div>
-                )}
+                <div className="w-6 h-6 bg-trench-orange flex items-center justify-center overflow-hidden"
+                     style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
+                  <Check className="w-4 h-4 text-black" />
+                </div>
               </div>
             </div>
-
-            {/* NVAI Burn Option */}
-            <NVAIBurnOption
-              selected={useNVAIPayment}
-              onSelect={(use) => {
-                setUseNVAIPayment(use);
-                checkUserBalance();
-              }}
-            />
           </div>
 
         </div>
@@ -685,7 +466,7 @@ export default function MultisigOnboarding({ isOpen, onComplete }: MultisigOnboa
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-500 uppercase tracking-wider">Payment</span>
               <span className="text-sm text-trench-orange font-bold font-mono">
-                {useNVAIPayment ? "NVAI" : `${MULTISIG_CREATION_COST_SOL} SOL`}
+                {MULTISIG_CREATION_COST_SOL} SOL
               </span>
             </div>
           </div>
