@@ -1,0 +1,7 @@
+{
+  "demo": "npm run dev",
+  "demo:build": "npm run build",
+  "demo:start": "npm start"
+}
+
+Add these scripts to your package.json scripts section for easy demo access!

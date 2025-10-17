@@ -2,6 +2,20 @@
 
 Nova Vault is a React web application that provides a user-friendly interface for creating and managing multisig wallets on the Solana blockchain. The application interacts directly with on-chain Solana programs to enable secure, collaborative wallet management.
 
+## 🎭 Demo Mode Available!
+
+Want to try Nova Vault without any setup? We've got you covered!
+
+**[Try the Demo →](./DEMO_README.md)** - No wallet, no crypto, no configuration needed!
+
+Perfect for:
+- 📽️ Presentations and demos
+- 🎓 Learning how multisigs work
+- 🎨 UI/UX exploration
+- 📱 Creating screenshots/videos
+
+Just run `npm run dev` and visit `/demo` - that's it!
+
 ## What is Nova Vault?
 
 Nova Vault is a decentralized application (dApp) built with React and Next.js that allows users to:
