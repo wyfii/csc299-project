@@ -1,0 +1,23 @@
+[project]
+name = "task3"
+version = "0.1.0"
+description = "CSC299 Task 3 – packaged task manager with tests"
+readme = "README.md"
+authors = [
+    { name = "ceo", email = "student@example.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+task3 = "tasks3:main"
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+]
+

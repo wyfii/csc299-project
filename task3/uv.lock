@@ -1,0 +1,14 @@
+version = 1
+revision = 1
+requires-python = ">=3.11"
+
+[[package]]
+name = "task3"
+version = "0.1.0"
+source = { editable = "." }
+
+[[package.dev-dependencies]]
+dev = [
+    { name = "pytest", specifier = ">=8.3.0" },
+]
+
