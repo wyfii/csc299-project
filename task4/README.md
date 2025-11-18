@@ -31,3 +31,6 @@ Long description ──► OpenAI Responses API ──► Short action phrase
 
 `openai` is the only runtime dependency, declared in `pyproject.toml`.
 
+
+
+
