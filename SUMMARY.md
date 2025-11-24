@@ -203,7 +203,3 @@ The biggest thing? AI is super useful but it's just a tool. Like a really smart 
 Would I have learned this much if I'd only built it once? No way. The whole point was the iteration - building on what you learned before, making each version better. The final version is something I actually built, not something AI spit out.
 
 And yeah, it took 6 tries to get here, but I think that's kinda the point of learning.
-
----
-
-**Word Count**: ~1,800 words (I know the minimum was 500 but I had things to say)
