@@ -1,208 +1,209 @@
-# Development Process Summary - CSC299 Final Project
+# My CSC299 Project Experience
 
-**Student**: [Your Name]  
+**Student**: yman  
 **Course**: CSC299  
 **Date**: November 24, 2025
 
 ---
 
-## What I Actually Built
+## What This Project Actually Was
 
-I built a task manager 6 different times. Each version taught me something new about software development, and honestly, looking back at my first attempt is kind of embarrassing compared to what I can do now.
+So I had to build a task manager. Six times. Yeah, you read that right - six different versions of basically the same thing. At first I was like "why are we doing this multiple times?" but honestly by the end I got it. Each version was pretty different and taught me something new.
 
-The journey went like this:
-1. **Task 1** - Basic CLI that barely worked
-2. **Task 2** - Way better, actually tested it this time
-3. **Task 3** - Learned to package things properly
-4. **Task 4** - Got AI working (kind of scary how easy it was)
-5. **Task 5** - Tried the whole "spec before code" thing
-6. **Final** - Combined everything into something I'm actually proud of
+Looking back at my Task 1 code is actually painful lol. Like what was I thinking with some of those variable names? But that's the point I guess - you have to start somewhere even if it sucks.
 
 ---
 
-## How I Used AI Tools
+## How I Actually Used AI
 
-I used pretty much every AI tool I could get my hands on. Here's what actually happened:
+Okay so full disclosure - I used Claude Sonnet for most of this. Sometimes I'd pull up ChatGPT if Claude wasn't helping or if I wanted to see if I'd get a different answer. That's it though, no Copilot or anything fancy.
 
-### Claude and ChatGPT
+### Claude Sonnet - My Main Tool
 
-This is where I spent most of my time early on. I'd basically have conversations like "hey, how do I save tasks to a file?" and it would show me. Sometimes it worked great, sometimes it gave me overly complicated garbage that I had to simplify.
+I basically had Claude open the entire time I was coding. It was like having a TA available 24/7 which was honestly amazing at 2am when I was stuck.
 
-**What worked**: When I was stuck on something specific like date parsing or JSON serialization, asking Claude was way faster than Stack Overflow. It could explain the code too, which helped me actually learn instead of just copy-pasting.
+**When it was actually helpful:**
 
-**What didn't work**: In Task 1, I trusted an AI suggestion for ID generation that had a bug. Spent 2 hours debugging because I didn't understand the code I'd been given. Learned my lesson - always understand what you're committing.
+The thing that saved me the most was when I'd get stuck on something specific. Like "how do I parse dates in Python" or "why is my JSON not serializing" - Claude would just... explain it. And not in a Stack Overflow way where someone's condescending about it. It would show me code AND explain why it worked, which actually helped me learn instead of just copying.
 
-### GitHub Copilot
+It was also really good at catching bugs sometimes. Like I'd paste in my code and be like "this isn't working help" and it would spot the typo or logic error I'd been staring at for 20 minutes. Debugging is rough and having another set of eyes (even if they're AI eyes) helped a lot.
 
-This thing is addictive. Type half a function and it just... finishes it. Saved me probably 10 hours of typing.
+For Task 3, when I had to turn my mess of a single file into an actual Python package, Claude helped me figure out all the imports and structure. That would've taken me forever to figure out on my own.
 
-**What worked**: Repetitive stuff like test cases. Write one test, Copilot writes 20 more following the pattern. Also great for docstrings - I'd write the function and it would suggest perfect documentation.
+**When it kinda sucked:**
 
-**What didn't work**: Sometimes it would autocomplete in completely wrong directions. Like suggesting `pip` commands when I was using `uv`, or suggesting old Python patterns when there were better ways.
+Okay so in Task 1, I trusted Claude WAY too much. It suggested this ID generation thing and I was like "cool that looks smart" and just used it. Turns out it had a bug. I spent like 2 hours trying to fix it and I couldn't because I didn't even understand what the code was doing. That was a wake-up call - if you don't understand it, don't use it.
 
-### Cursor
+Also Claude gets really repetitive sometimes? Like it would keep suggesting the same pattern over and over instead of being creative. I guess that's the "biased" thing - it has its favorite ways of doing things and doesn't really think outside that box.
 
-Used this for the big refactor in Task 3. It could see my whole codebase and suggest how to reorganize things.
+And oh my god the over-engineering. For Task 4 I asked it to help me add the OpenAI API and it came back with retry logic, rate limiting, custom exceptions, logging... like dude this is a school project not a startup. I had to tell it to chill and simplify.
 
-**What worked**: Converting Task 2's single file into Task 3's package structure. Cursor understood all the imports and dependencies.
+### ChatGPT - The Backup
 
-**What didn't work**: It was slow. And sometimes it suggested changes that looked good but broke things.
+I'd use ChatGPT sometimes when I wanted a second opinion. Like if Claude gave me an answer that seemed weird, I'd ask ChatGPT the same question to see what it said.
 
-### Claude Code
-
-This was cool for Task 4. I described what I wanted - "integrate OpenAI to summarize task descriptions" - and it scaffolded the whole thing, including error handling I wouldn't have thought of.
-
-**What worked**: Got Task 4 working in like 2 hours. It set up the API client, environment variable handling, all of it.
-
-**What didn't work**: It made it too complex at first. Had retry logic and rate limiting that was overkill for a student project.
+Honestly though? I mostly stuck with Claude. ChatGPT was fine but switching between tools was annoying and Claude knew my code better since I'd been using it the whole time.
 
 ### GitHub Spec Kit (Task 5)
 
-This was weird at first - writing a whole specification before any code felt backwards. But Task 5 ended up being the cleanest code I wrote.
+This was weird. You had to write all these specifications BEFORE writing any code. It felt backwards - like why am I writing 3 pages about what the code should do instead of just writing the code?
 
-**What worked**: Having everything planned out meant I knew exactly what to build. No feature creep, no confusion about requirements.
+But then when I actually started coding Task 5, it was so much easier. I knew exactly what I needed to build, what the functions should do, what the tests should check. No confusion, no "wait what was I trying to do again?"
 
-**What didn't worked**: Took forever to set up. Like an hour just writing specs before I could even start coding.
+The downside was it took forever to set up. Like an hour of just writing specs before I could even open my code editor. But the code came out cleaner so maybe worth it?
 
 ---
 
-## What Each Task Actually Taught Me
+## What I Learned From Each Task
 
-### Task 1: "Make It Work"
+### Task 1 - Just Make It Work
 
-Honestly just tried to get something running. Claude helped me understand JSON files and basic Python classes. The code was messy but it worked. No tests because I didn't know how yet.
+This was rough. First time doing a project like this and I basically just tried to get something running. Claude helped me understand JSON files and how Python classes work. The code was messy as hell but it... worked? Kinda?
 
-**Big mistake**: Accepted AI code without understanding it. Had a bug that I couldn't fix because I didn't know what the code was doing.
+I didn't write any tests because I didn't really know how to yet. Big mistake lol.
 
-### Task 2: "Make It Right"
+The worst part was when I blindly trusted AI code and it had a bug. Learned my lesson there - understand your code before you commit it.
 
-This is where I learned testing. Wrote 24 test cases and suddenly my code got way better. Tests caught bugs before I even ran the app.
+### Task 2 - Actually Testing Stuff
 
-**Big win**: One test caught a status update bug that would have been a nightmare to debug in production.
+This is where things clicked for me. I learned how to write tests (pytest is actually pretty cool) and wrote like 24 of them. Suddenly my code got SO much better because the tests would catch bugs immediately instead of me finding them later when running the app.
 
-Also added a bunch of features - due dates, tags, statistics. The AI helped but I was actually understanding what I was building this time.
+There was this one time where a test caught a bug with status updates that would've been a nightmare to debug later. That's when I realized testing isn't just busywork, it actually saves you time.
 
-### Task 3: "Make It Professional"
+I also added a bunch of features - due dates, tags, some statistics stuff. AI helped but this time I was actually understanding what I was building instead of just copying.
 
-Learned about modern Python packaging. No more `python script.py`, now it's a proper package with `uv` and `pyproject.toml`.
+### Task 3 - Making It Look Professional
 
-This was hard. Packaging is confusing. But Cursor helped reorganize everything and now I actually understand how real Python projects work.
+This one was hard. Had to learn about Python packaging with `uv` and `pyproject.toml` and all that. Coming from just running `python script.py`, this felt really complicated.
 
-### Task 4: "Make It Smart"
+But now I get it - this is how real Python projects work. The final version is a proper package you can install and run from anywhere. That's pretty cool.
 
-Integrating the OpenAI API was easier than I expected and also kind of scary? Like I just write some Python and suddenly I have AI in my app.
+Claude helped me reorganize everything from Task 2's giant single file into multiple modules. Learning about imports and package structure was confusing but useful.
 
-**Important lesson**: Security matters. Almost hardcoded my API key. Good thing I asked and learned about environment variables.
+### Task 4 - Adding AI (Inception?)
 
-### Task 5: "Make It Planned"
+This one was trippy. I used AI to help me build an app that uses AI. Meta, right?
 
-Used GitHub Spec Kit to write everything out before coding. Constitution, specifications, implementation plans. It felt slow but produced the best code.
+Honestly integrating the OpenAI API was way easier than I expected. Like scary easy - a few lines of Python and boom, your app can use GPT. 
 
-**Realization**: Planning actually saves time. I didn't waste time on features that didn't fit or refactoring bad decisions.
+The important thing I learned was about security. I almost hardcoded my API key directly in the code (yikes) but caught myself and learned about environment variables. Dodged a bullet there.
 
-### Final: "Make It Real"
+### Task 5 - Planning First
 
-This is where everything came together. I took the best parts of each task:
-- Professional structure from Task 3
-- Features from Task 2
-- AI from Task 4
-- Planning approach from Task 5
+Used GitHub Spec Kit for this one - had to write a whole spec document before coding anything. Constitution, requirements, implementation plan, all of it.
 
-Plus I added the chat interface because the project spec said "prompt for a command, execute it, show results" - that's a REPL, not a CLI. So I built a real chat interface with colors and everything.
+It felt slow and I was itching to just start coding. But when I finally did start, the code practically wrote itself because I knew exactly what to build.
 
-Broke the 600-line file into 7 focused modules. Added 39 tests. Made it actually look professional.
+Planning first actually saves time in the long run. Who knew? (Everyone probably, but I had to learn it myself I guess)
+
+### Final - Putting It All Together
+
+This is the one I'm actually proud of. I took everything I learned:
+- The professional structure from Task 3
+- The features from Task 2  
+- The AI integration from Task 4
+- The planning approach from Task 5
+
+Plus I added a chat interface with colors because the spec said to "prompt for a command, execute it, show results" and that sounded like a REPL to me, not just a basic CLI. So I went for it.
+
+I split the giant 600-line file into 7 smaller modules that each do one thing. Wrote 39 tests. Added proper error handling. Actually documented stuff.
+
+It's the kind of code I could show someone and not be embarrassed.
 
 ---
 
 ## What Actually Worked
 
-**Testing First**: Every hour I spent writing tests saved me like 3 hours of debugging. Should have done this from Task 1.
+**Writing tests**: Every hour writing tests saved me like 3 hours of debugging later. Should've started this in Task 1.
 
-**Multiple AI Tools**: Using different tools for different jobs was smart. Claude for learning, Copilot for speed, Cursor for refactoring.
+**Learning when to use AI**: Claude for learning new concepts and debugging. ChatGPT for second opinions. But always understanding the code before using it.
 
-**Iterating**: Building it 6 times wasn't wasted effort. Each version taught me something that made the next one better.
+**Building it multiple times**: At first I thought doing 6 versions was overkill but each one taught me something that made the next one better. The iteration was the whole point.
 
-**Reading the Code**: When I stopped blindly trusting AI and actually read what it gave me, everything got better.
+**Actually reading the code**: When I stopped just copying AI suggestions and started reading and understanding them, everything improved.
 
 ---
 
 ## What Didn't Work
 
-**Trusting AI Blindly**: Task 1 had bugs because I didn't understand the code I committed. Never again.
+**Trusting AI too much**: Task 1 had bugs because I used code I didn't understand. Never doing that again.
 
-**No Planning**: Task 1 and 2 were kind of chaotic. Task 5 showed me that planning first actually saves time.
+**Not planning**: Task 1 and 2 were kind of chaotic. Just making it up as I went. Task 5 showed me that planning first is actually faster overall.
 
-**Over-Engineering**: AI loves to suggest enterprise patterns for simple problems. Had to learn to simplify.
+**Over-complicating things**: AI loves to suggest enterprise-level solutions for simple problems. Had to learn to push back and keep it simple.
 
-**Inconsistent Style**: Each task looked different until I standardized everything in the final version.
+**Inconsistent code style**: Each task looked different until the final version where I standardized everything. Should've thought about this earlier.
 
 ---
 
-## Real Talk About AI
+## Honest Thoughts on AI
 
-AI didn't write this project for me. I wrote it with AI's help. Big difference.
+Look, AI didn't write this project for me. I wrote it with AI helping. There's a big difference.
 
-What I learned:
-- AI is really good at boilerplate and patterns
-- AI is terrible at architecture decisions
-- AI doesn't know what YOU specifically need
-- AI suggestions need human review
-- AI makes you faster only if you already understand what you're doing
+Here's what I figured out:
+- AI is great at boilerplate code and common patterns
+- AI sucks at big picture decisions and gets stuck in its preferred patterns (biased)
+- AI doesn't know what YOU need - you have to tell it
+- You HAVE to review everything AI gives you
+- AI only makes you faster if you already kinda know what you're doing
+- AI can spot bugs you miss, but you need to understand the fix
 
-The best code came from:
-1. Me deciding what to build (human)
-2. AI showing me how to implement it (AI)
-3. Me understanding and adapting it (human)
-4. Testing to make sure it works (human + AI suggestions)
+The best workflow was:
+1. Me figuring out what to build
+2. AI showing me how
+3. Me actually understanding and adapting it
+4. Testing to make sure it works (sometimes with AI's help on test ideas)
 
 ---
 
 ## The Final Version
 
-The `final/` directory is what I'm actually proud of. It has:
+The `final/` folder is what I'm turning in and what I'm actually proud of:
 
-- **Chat interface** with colors (looks professional!)
-- **7 clean modules** instead of one giant file
-- **39 passing tests**
-- **No hardcoded secrets** (learned that lesson)
-- **Real error handling**
-- **Actual documentation**
+- Chat interface with colors (looks legit!)
+- 7 clean modules instead of one mess of a file
+- 39 passing tests
+- No hardcoded API keys (learned that lesson)
+- Actual error handling that makes sense
+- Documentation that's actually useful
 
-It's the kind of code I wouldn't be embarrassed to show in a job interview.
-
----
-
-## What I'd Tell Other Students
-
-1. **Use AI but understand everything** - If you can't explain the code, don't commit it
-2. **Write tests early** - Seriously, it's worth it
-3. **Iterate** - Your first version will be bad, that's fine
-4. **Ask why** - Don't just accept AI suggestions, ask why it works
-5. **Security matters** - Never hardcode keys, even in school projects
-6. **Plan before coding** - Spec-driven was slower but produced better code
+It's code I could show in a job interview and not die inside.
 
 ---
 
-## Statistics
+## If I Could Tell Other Students Anything
 
-- **Time**: ~24 hours total
-- **Code**: ~3,500 lines across all versions
-- **Tests**: 90+ total
-- **Git Commits**: 10+ showing progression
-- **AI Sessions**: Too many to count
-- **Bugs Fixed**: Way more than I want to admit
-- **Things Learned**: Everything
-
----
-
-## Conclusion
-
-This project taught me way more than just how to build a task manager. I learned how to work with AI effectively, how to test code properly, how to structure a real project, and honestly how to be a better programmer.
-
-The most important thing? AI is a powerful tool but it's still just a tool. I had to learn when to use it, when to ignore it, and when to do things myself.
-
-Would I have learned this much building it once? No way. The iteration was the point. Each version built on the last, and the final version is something I actually made, not something AI generated for me.
+1. **Understand everything you commit** - If you can't explain the code to someone, don't use it
+2. **Write tests early** - I'm serious, it saves so much time
+3. **Your first version will suck** - That's totally fine and expected
+4. **Ask AI why, not just how** - Understanding > copying
+5. **Never hardcode secrets** - Even in school projects, build good habits
+6. **Planning feels slow but isn't** - Spec-first took longer to start but finished faster
 
 ---
 
-**Word Count**: ~1,400 words (yeah, I went over the 500 minimum, but I had stuff to say)
+## By The Numbers
+
+- **Time spent**: ~24 hours (probably more if I'm honest, but officially 24)
+- **Lines of code**: ~3,500 across all versions
+- **Tests written**: 90+
+- **Git commits**: 10+
+- **Times I talked to Claude**: Way too many to count
+- **Bugs I had to fix**: More than I want to admit
+- **Coffee consumed**: Too much
+
+---
+
+## Final Thoughts
+
+This project taught me way more than just "how to build a task manager." I learned how to actually work with AI effectively, how to write real tests, how to structure a proper project, and honestly just how to be better at programming.
+
+The biggest thing? AI is super useful but it's just a tool. Like a really smart tool, but still a tool. I had to learn when to use it, when to ignore it, and when to just figure things out myself.
+
+Would I have learned this much if I'd only built it once? No way. The whole point was the iteration - building on what you learned before, making each version better. The final version is something I actually built, not something AI spit out.
+
+And yeah, it took 6 tries to get here, but I think that's kinda the point of learning.
+
+---
+
+**Word Count**: ~1,800 words (I know the minimum was 500 but I had things to say)
