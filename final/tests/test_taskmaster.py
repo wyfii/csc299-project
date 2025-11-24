@@ -331,8 +331,9 @@ class TestTaskManager:
 class TestAITaskSummarizer:
     """Test the AI summarizer (without actual API calls)."""
     
-    def test_summarizer_without_api_key(self):
+    def test_summarizer_without_api_key(self, monkeypatch):
         """Test summarizer initialization without API key."""
+        monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         summarizer = AITaskSummarizer(api_key=None)
         assert summarizer.is_available() is False
     
@@ -342,8 +343,9 @@ class TestAITaskSummarizer:
         # Should initialize but API calls will fail
         assert summarizer.api_key == "invalid_key"
     
-    def test_summarize_without_client(self):
+    def test_summarize_without_client(self, monkeypatch):
         """Test summarization when client is unavailable."""
+        monkeypatch.delenv("OPENAI_API_KEY", raising=False)
         summarizer = AITaskSummarizer(api_key=None)
         result = summarizer.summarize("Long task description")
         assert result is None

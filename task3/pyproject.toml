@@ -1,5 +1,5 @@
 [project]
-name = "task3"
+name = "tasks3"
 version = "0.1.0"
 description = "CSC299 Task 3 – packaged task manager with tests"
 readme = "README.md"
