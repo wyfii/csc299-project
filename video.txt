@@ -1,0 +1,21 @@
+YouTube Video URL: [TO BE ADDED AFTER RECORDING]
+
+Video Title: "CSC299 Final Project - Task Management System Development Journey"
+
+Expected Duration: 6-8 minutes
+
+Video demonstrates:
+- Overview of all 5 tasks
+- Live demonstration of Task 2 (enhanced version with tests)
+- Live demonstration of Task 3 (packaged version)
+- Live demonstration of Task 4 (AI summarization)
+- Explanation of Task 5 (spec-driven development)
+- Git commit history walkthrough
+- Testing demonstration
+- Development process summary
+
+Recording Date: [TO BE RECORDED]
+Upload Date: [TO BE UPLOADED]
+
+Note: Follow the YouTube_Demonstration_Script.md for recording guidance.
+
